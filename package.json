@@ -1,0 +1,29 @@
+{
+  "name": "reflect-ai",
+  "version": "1.0.0",
+  "description": "AI-powered conversation analysis and behavioral insights",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "formidable": "^3.5.1",
+    "node-fetch": "^2.7.0",
+    "form-data": "^4.0.0"
+  },
+  "keywords": [
+    "ai", 
+    "conversation", 
+    "analysis", 
+    "whisper", 
+    "openai", 
+    "behavioral-psychology"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

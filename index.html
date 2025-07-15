@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflect AI - Understand Your Conversations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .settings-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .setting-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .method-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .method-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .method-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .recording-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .record-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .record-btn.start {
+            background: #28a745;
+            color: white;
+        }
+
+        .record-btn.stop {
+            background: #dc3545;
+            color: white;
+        }
+
+        .record-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .record-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #28a745;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .transcript-section {
+            margin-bottom: 30px;
+        }
+
+        .transcript-box {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .speaker-line {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            background: white;
+            border-left: 4px solid #667eea;
+        }
+
+        .speaker-name {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .speaker-text {
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .speaker-management {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .speaker-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .speaker-label {
+            min-width: 80px;
+            font-weight: 600;
+        }
+
+        .speaker-name-input {
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .is-me-checkbox {
+            width: auto;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .action-btn.summary {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .action-btn.analyze {
+            background: #6f42c1;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .result-content {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .prompt-section {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .prompt-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #856404;
+        }
+
+        .prompt-textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .context-section {
+            background: #d1ecf1;
+            border: 2px solid #bee5eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .settings-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .input-methods {
+                flex-direction: column;
+            }
+            
+            .recording-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Reflect AI</h1>
+            <p>Understand your conversations, discover yourself</p>
+        </div>
+
+        <div class="main-card">
+            <!-- Settings Section -->
+            <div class="settings-section">
+                <h2>Settings</h2>
+                <div class="settings-row">
+                    <div class="setting-group">
+                        <label for="userName">Your Name:</label>
+                        <input type="text" id="userName" placeholder="Enter your name">
+                    </div>
+                    <div class="setting-group">
+                        <label for="conversationLanguage">Conversation Language:</label>
+                        <select id="conversationLanguage">
+                            <option value="en">English</option>
+                            <option value="he">Hebrew</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label for="analysisLanguage">Analysis Language:</label>
+                        <select id="analysisLanguage">
+                            <option value="en">English</option>
+                            <option value="he">Hebrew</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Method Selection -->
+            <div class="input-methods">
+                <div class="method-btn active" data-method="record">
+                    🎙️ Record Live
+                </div>
+                <div class="method-btn" data-method="upload">
+                    📁 Upload Audio
+                </div>
+                <div class="method-btn" data-method="type">
+                    ✍️ Type/Describe
+                </div>
+            </div>
+
+            <!-- Recording Section -->
+            <div class="input-section" id="recordSection">
+                <div class="recording-controls">
+                    <button class="record-btn start" id="startRecording">
+                        🎙️ Start Recording
+                    </button>
+                    <button class="record-btn stop hidden" id="stopRecording">
+                        ⏹️ Stop Recording
+                    </button>
+                    <div class="status-indicator hidden" id="recordingStatus">
+                        <div class="status-dot"></div>
+                        <span>Recording...</span>
+                    </div>
+                </div>
+                <audio id="audioPlayback" controls class="hidden" style="width: 100%; margin-top: 10px;"></audio>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="input-section hidden" id="uploadSection">
+                <label for="audioFile">Upload Audio File:</label>
+                <input type="file" id="audioFile" accept="audio/*">
+            </div>
+
+            <!-- Type Section -->
+            <div class="input-section hidden" id="typeSection">
+                <label for="conversationText">Type or Describe Your Conversation:</label>
+                <textarea id="conversationText" placeholder="Describe your conversation here..." rows="6"></textarea>
+            </div>
+
+            <!-- Transcript Section -->
+            <div class="transcript-section">
+                <h3>Conversation Transcript</h3>
+                <div class="transcript-box" id="transcriptBox">
+                    <p style="color: #666; text-align: center;">Your conversation transcript will appear here...</p>
+                </div>
+            </div>
+
+            <!-- Speaker Management -->
+            <div class="speaker-management hidden" id="speakerManagement">
+                <h3>Identify Speakers</h3>
+                <p style="margin-bottom: 15px;">Name the speakers and select which one is you:</p>
+                <div id="speakerList"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn summary" id="summaryBtn" disabled>
+                    📋 Generate Summary
+                </button>
+                <button class="action-btn analyze" id="analyzeBtn" disabled>
+                    🔍 Analyze My Behavior
+                </button>
+            </div>
+
+            <!-- AI Prompt Customization -->
+            <div class="prompt-section">
+                <div class="prompt-title">🎯 Customize Summary Prompt</div>
+                <textarea id="summaryPrompt" class="prompt-textarea" placeholder="Enter your custom prompt for summary generation...">You are an expert conversation analyst. Create a comprehensive summary of the following conversation for the user. Address the user directly in second person throughout your summary.
+
+Please organize your summary by:
+- Main topics discussed in your conversation
+- Key points and decisions made
+- Important insights or revelations that came up
+- Any action items or next steps mentioned
+
+Write in a conversational tone, addressing the user as "you" and referring to their specific contributions to the discussion. Be thorough but concise.</textarea>
+                
+                <div class="prompt-title" style="margin-top: 20px;">🎯 Customize Analysis Prompt</div>
+                <textarea id="aiPrompt" class="prompt-textarea" placeholder="Enter your custom prompt for AI analysis...">You are an expert conversation analyst and behavioral psychologist. Analyze the following conversation transcript, focusing specifically on the user's behavior, communication patterns, and social dynamics. Address the user directly in second person throughout your analysis.
+
+Please provide insights about:
+- Your communication style and patterns
+- How you interact with others in the conversation
+- Any behavioral insights or areas for improvement you might consider
+- Underlying issues or patterns you might want to be aware of
+- Constructive advice for your future social interactions
+
+Write your analysis in a conversational, flowing paragraph addressing the user directly as "you." Be empathetic but honest, focusing on growth and self-awareness.</textarea>
+                <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                    <strong>Note:</strong> When Hebrew is selected as analysis language, Hebrew prompts will be used automatically. These custom prompts apply only to English analysis.
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="result-box hidden" id="summaryResult">
+                    <div class="result-title">📋 Conversation Summary</div>
+                    <div class="result-content" id="summaryContent"></div>
+                </div>
+
+                <div class="result-box hidden" id="analysisResult">
+                    <div class="result-title">🔍 Your Behavioral Analysis</div>
+                    <div class="result-content" id="analysisContent"></div>
+                </div>
+
+                <div class="context-section hidden" id="contextSection">
+                    <label for="contextInput">Add more context or continue the conversation:</label>
+                    <textarea id="contextInput" rows="3" placeholder="Add your thoughts, context, or ask follow-up questions..."></textarea>
+                    <button class="action-btn analyze" id="continueBtn" style="margin-top: 10px;">
+                        💬 Continue Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let mediaRecorder;
+        let audioChunks = [];
+        let currentTranscript = '';
+        let speakers = [];
+        let currentMethod = 'record';
+        let isRecording = false;
+
+        // Backend Configuration - Vercel API routes
+        const BACKEND_URL = window.location.origin;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            setupMethodSwitching();
+            testBackendConnection();
+        });
+
+        async function testBackendConnection() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Backend connected successfully:', data);
+                    
+                    // Show success indicator
+                    showSuccess('🟢 Backend server connected - Secure transcription and analysis available!');
+                } else {
+                    throw new Error(`Server responded with status ${response.status}`);
+                }
+            } catch (error) {
+                console.log('❌ Backend connection failed:', error.message);
+                
+                // Show warning indicator
+                showError('🟡 Backend offline - Please start the backend server for full functionality');
+            }
+        }
+
+        function initializeEventListeners() {
+            document.getElementById('startRecording').addEventListener('click', startRecording);
+            document.getElementById('stopRecording').addEventListener('click', stopRecording);
+            document.getElementById('audioFile').addEventListener('change', handleFileUpload);
+            document.getElementById('conversationText').addEventListener('input', handleTextInput);
+            document.getElementById('summaryBtn').addEventListener('click', generateSummary);
+            document.getElementById('analyzeBtn').addEventListener('click', analyzeConversation);
+            document.getElementById('continueBtn').addEventListener('click', continueAnalysis);
+        }
+
+        function setupMethodSwitching() {
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active button
+                    document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Hide all sections
+                    document.querySelectorAll('.input-section').forEach(section => {
+                        section.classList.add('hidden');
+                    });
+                    
+                    // Show selected section
+                    currentMethod = this.dataset.method;
+                    document.getElementById(currentMethod + 'Section').classList.remove('hidden');
+                    
+                    // Reset transcript
+                    resetTranscript();
+                });
+            });
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                // Use audio formats that Whisper supports
+                let options = {};
+                if (MediaRecorder.isTypeSupported('audio/wav')) {
+                    options = { mimeType: 'audio/wav' };
+                } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+                    options = { mimeType: 'audio/mp4' };
+                } else if (MediaRecorder.isTypeSupported('audio/ogg')) {
+                    options = { mimeType: 'audio/ogg' };
+                } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+                    options = { mimeType: 'audio/webm' };
+                }
+                
+                mediaRecorder = new MediaRecorder(stream, options);
+                console.log('🎙️ Recording with format:', mediaRecorder.mimeType);
+                
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    // Create blob with appropriate format
+                    const mimeType = mediaRecorder.mimeType || 'audio/wav';
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
+                    
+                    console.log('📄 Audio blob type:', audioBlob.type);
+                    console.log('📊 Audio blob size:', audioBlob.size, 'bytes');
+                    
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audioElement = document.getElementById('audioPlayback');
+                    audioElement.src = audioUrl;
+                    audioElement.classList.remove('hidden');
+                    
+                    await transcribeAudio(audioBlob);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                
+                document.getElementById('startRecording').classList.add('hidden');
+                document.getElementById('stopRecording').classList.remove('hidden');
+                document.getElementById('recordingStatus').classList.remove('hidden');
+                
+                showLiveTranscription();
+                
+            } catch (error) {
+                showError('Error accessing microphone: ' + error.message);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                
+                // Update UI
+                document.getElementById('startRecording').classList.remove('hidden');
+                document.getElementById('stopRecording').classList.add('hidden');
+                document.getElementById('recordingStatus').classList.add('hidden');
+            }
+        }
+
+        // Fixed: Define the showLiveTranscription function
+        function showLiveTranscription() {
+            const transcriptBox = document.getElementById('transcriptBox');
+            transcriptBox.innerHTML = '<p style="color: #667eea; text-align: center;">🎙️ Recording in progress... Transcript will appear when you stop recording.</p>';
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Show the uploaded file info
+                const transcriptBox = document.getElementById('transcriptBox');
+                transcriptBox.innerHTML = `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+                        <p><strong>📁 File uploaded:</strong> ${file.name}</p>
+                        <p style="color: #666; margin-top: 5px;">File size: ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <p style="color: #28a745; margin-top: 10px;">
+                            🚀 Connecting to transcription server...
+                        </p>
+                    </div>
+                `;
+                
+                // Transcribe the uploaded file
+                await transcribeAudio(file);
+            }
+        }
+
+        function handleTextInput() {
+            const text = document.getElementById('conversationText').value;
+            if (text.trim()) {
+                // Parse the text into speaker format
+                const lines = text.split('\n').filter(line => line.trim());
+                currentTranscript = lines.join('\n');
+                displayTranscript(currentTranscript);
+                enableActionButtons();
+            }
+        }
+
+        async function transcribeAudio(audioBlob) {
+            try {
+                showLoading('Transcribing with Whisper AI...');
+                
+                // Test backend connection
+                const healthCheck = await fetch(`${BACKEND_URL}/health`);
+                if (!healthCheck.ok) {
+                    throw new Error('Backend server is not responding');
+                }
+                
+                // Create FormData for Whisper backend
+                const formData = new FormData();
+                
+                // Determine appropriate filename
+                let filename = 'recording.wav';
+                if (audioBlob.type.includes('mp4')) {
+                    filename = 'recording.mp4';
+                } else if (audioBlob.type.includes('ogg')) {
+                    filename = 'recording.ogg';
+                } else if (audioBlob.type.includes('webm')) {
+                    filename = 'recording.webm';
+                }
+                
+                console.log('📤 Uploading as:', filename, 'Type:', audioBlob.type);
+                
+                formData.append('audio', audioBlob, filename);
+                formData.append('language', document.getElementById('conversationLanguage').value);
+                
+                // Send to Whisper backend
+                const response = await fetch(`${BACKEND_URL}/api/transcribe`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch {
+                        errorData = { message: errorText };
+                    }
+                    throw new Error(errorData.message || `Transcription failed: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.status === 'completed') {
+                    currentTranscript = data.transcript;
+                    displayTranscript(currentTranscript);
+                    enableActionButtons();
+                    showSuccess(`✅ Transcription completed! Language: ${data.language}, Service: ${data.transcription_service}`);
+                } else {
+                    throw new Error('Transcription incomplete: ' + data.message);
+                }
+                
+            } catch (error) {
+                console.error('Transcription error:', error);
+                hideLoading();
+                
+                if (error.message.includes('Backend server')) {
+                    showError('❌ Cannot connect to backend server. Please make sure it\'s running.');
+                } else if (error.message.includes('Unrecognized file format')) {
+                    showError('❌ Audio format not supported. Try using "Upload Audio" with an MP3 or WAV file.');
+                } else {
+                    showError('Transcription failed: ' + error.message);
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayTranscript(transcript) {
+            const transcriptBox = document.getElementById('transcriptBox');
+            const lines = transcript.split('\n').filter(line => line.trim());
+            
+            transcriptBox.innerHTML = '';
+            
+            const uniqueSpeakers = new Set();
+            
+            lines.forEach(line => {
+                const speakerMatch = line.match(/^(Speaker [A-Z]|[^:]+):\s*(.+)$/);
+                if (speakerMatch) {
+                    const speaker = speakerMatch[1];
+                    const text = speakerMatch[2];
+                    uniqueSpeakers.add(speaker);
+                    
+                    const speakerLine = document.createElement('div');
+                    speakerLine.className = 'speaker-line';
+                    speakerLine.innerHTML = `
+                        <div class="speaker-name">${speaker}</div>
+                        <div class="speaker-text">${text}</div>
+                    `;
+                    transcriptBox.appendChild(speakerLine);
+                }
+            });
+            
+            // Update speaker management
+            updateSpeakerManagement(Array.from(uniqueSpeakers));
+        }
+
+        function updateSpeakerManagement(speakerList) {
+            speakers = speakerList;
+            const speakerManagement = document.getElementById('speakerManagement');
+            const speakerListDiv = document.getElementById('speakerList');
+            
+            if (speakers.length > 0) {
+                speakerManagement.classList.remove('hidden');
+                speakerListDiv.innerHTML = '';
+                
+                speakers.forEach((speaker, index) => {
+                    const speakerItem = document.createElement('div');
+                    speakerItem.className = 'speaker-item';
+                    speakerItem.innerHTML = `
+                        <div class="speaker-label">${speaker}</div>
+                        <input type="text" class="speaker-name-input" placeholder="Enter name..." value="${speaker}">
+                        <label>
+                            <input type="radio" name="isMe" class="is-me-checkbox" value="${index}">
+                            This is me
+                        </label>
+                    `;
+                    speakerListDiv.appendChild(speakerItem);
+                });
+            }
+        }
+
+        function enableActionButtons() {
+            document.getElementById('summaryBtn').disabled = false;
+            document.getElementById('analyzeBtn').disabled = false;
+        }
+
+        function resetTranscript() {
+            currentTranscript = '';
+            document.getElementById('transcriptBox').innerHTML = '<p style="color: #666; text-align: center;">Your conversation transcript will appear here...</p>';
+            document.getElementById('speakerManagement').classList.add('hidden');
+            document.getElementById('summaryResult').classList.add('hidden');
+            document.getElementById('analysisResult').classList.add('hidden');
+            document.getElementById('contextSection').classList.add('hidden');
+            document.getElementById('summaryBtn').disabled = true;
+            document.getElementById('analyzeBtn').disabled = true;
+        }
+
+        async function generateSummary() {
+            if (!currentTranscript) {
+                showError('No transcript available to summarize.');
+                return;
+            }
+            
+            try {
+                showLoading('Generating summary...');
+                
+                const analysisLanguage = document.getElementById('analysisLanguage').value;
+                const userName = document.getElementById('userName').value || 'User';
+                const customSummaryPrompt = document.getElementById('summaryPrompt').value;
+                
+                const languageInstruction = analysisLanguage === 'he' ? 
+                    'אנא השב בעברית בלבד. ' : 
+                    'Please respond in English only. ';
+                
+                let summaryPrompt = languageInstruction;
+                
+                if (analysisLanguage === 'he') {
+                    // Hebrew summary prompt
+                    summaryPrompt += `אתה מומחה לניתוח שיחות. צור סיכום מקיף של השיחה הבאה עבור המשתמש. פנה למשתמש ישירות בגוף שני לכל אורך הסיכום.
+
+אנא ארגן את הסיכום שלך לפי:
+- נושאים עיקריים שנדונו בשיחה שלך
+- נקודות מפתח והחלטות שהתקבלו
+- תובנות או גילויים חשובים שעלו
+- פריטי פעולה או צעדים הבאים שהוזכרו
+
+כתב בטון דיאלוגי, פנה למשתמש כ"אתה" והתייחס לתרומות הספציפיות שלו לדיון. היה יסודי אבל תמציתי.`;
+                } else {
+                    // English summary prompt (use custom)
+                    summaryPrompt += customSummaryPrompt;
+                }
+                
+                summaryPrompt += `\n\nשם המשתמש: ${userName}\n\nתמליל השיחה:\n${currentTranscript}`;
+                
+                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: summaryPrompt,
+                        maxTokens: 500,
+                        language: analysisLanguage
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Summary generation failed');
+                }
+                
+                const data = await response.json();
+                
+                document.getElementById('summaryContent').innerHTML = data.response.replace(/\n/g, '<br>');
+                document.getElementById('summaryResult').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Summary error:', error);
+                if (error.message.includes('fetch')) {
+                    showError('Cannot connect to analysis server. Please make sure the backend server is running.');
+                } else {
+                    showError('Error generating summary: ' + error.message);
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function analyzeConversation() {
+            if (!currentTranscript) {
+                showError('No transcript available to analyze.');
+                return;
+            }
+            
+            const userName = document.getElementById('userName').value || 'User';
+            const selectedSpeaker = getSelectedSpeaker();
+            const customPrompt = document.getElementById('aiPrompt').value;
+            const analysisLanguage = document.getElementById('analysisLanguage').value;
+            
+            try {
+                showLoading('Analyzing your conversation...');
+                
+                const languageInstruction = analysisLanguage === 'he' ? 
+                    'אנא השב בעברית בלבד. ' : 
+                    'Please respond in English only. ';
+                
+                let analysisPrompt = languageInstruction;
+                
+                if (analysisLanguage === 'he') {
+                    // Hebrew version of the analysis prompt
+                    analysisPrompt += `אתה מומחה לניתוח שיחות ופסיכולוג התנהגותי. נתח את תמליל השיחה הבא, תוך התמקדות ספציפית בהתנהגות של המשתמש, דפוסי התקשורת והדינמיקה החברתית. פנה למשתמש ישירות בגוף שני לכל אורך הניתוח.
+
+אנא ספק תובנות על:
+- סגנון התקשורת והדפוסים שלך
+- איך אתה מתקשר עם אחרים בשיחה
+- תובנות התנהגותיות או תחומים לשיפור שאתה יכול לשקול
+- בעיות או דפוסים בסיסיים שכדאי שתהיה מודע אליהם
+- עצות בונות לאינטראקציות חברתיות עתידיות שלך
+
+כתב את הניתוח שלך בפסקה שוטפת ודיאלוגית, פונה למשתמש ישירות כ"אתה". היה אמפתי אבל כנה, תוך התמקדות בצמיחה ומודעות עצמית.`;
+                } else {
+                    // English version (use custom prompt)
+                    analysisPrompt += customPrompt;
+                }
+                
+                analysisPrompt += `\n\nשם המשתמש: ${userName}\n`;
+                if (selectedSpeaker) {
+                    analysisPrompt += analysisLanguage === 'he' ?
+                        `התמקד ספציפית בהתנהגות ובדפוסי התקשורת של "${selectedSpeaker}" בשיחה הזאת. ` :
+                        `Focus specifically on the behavior and communication patterns of "${selectedSpeaker}" in this conversation. `;
+                }
+                analysisPrompt += `\n\nתמליל השיחה:\n${currentTranscript}`;
+                
+                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: analysisPrompt,
+                        maxTokens: 800,
+                        language: analysisLanguage
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Analysis failed');
+                }
+                
+                const data = await response.json();
+                
+                document.getElementById('analysisContent').innerHTML = data.response.replace(/\n/g, '<br>');
+                document.getElementById('analysisResult').classList.remove('hidden');
+                document.getElementById('contextSection').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Analysis error:', error);
+                if (error.message.includes('fetch')) {
+                    showError('Cannot connect to analysis server. Please make sure the backend server is running.');
+                } else {
+                    showError('Error analyzing conversation: ' + error.message);
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function continueAnalysis() {
+            const contextInput = document.getElementById('contextInput').value;
+            if (!contextInput.trim()) {
+                showError('Please add some context or questions to continue.');
+                return;
+            }
+            
+            const userName = document.getElementById('userName').value || 'User';
+            const selectedSpeaker = getSelectedSpeaker();
+            const previousAnalysis = document.getElementById('analysisContent').innerHTML.replace(/<br>/g, '\n');
+            const analysisLanguage = document.getElementById('analysisLanguage').value;
+            
+            try {
+                showLoading('Continuing analysis...');
+                
+                const languageInstruction = analysisLanguage === 'he' ? 
+                    'אנא השב בעברית בלבד. ' : 
+                    'Please respond in English only. ';
+                
+                let continuePrompt = languageInstruction;
+                
+                if (analysisLanguage === 'he') {
+                    continuePrompt += `ניתוח קודם:\n${previousAnalysis}\n\n`;
+                    continuePrompt += `המשתמש (${userName}) הוסיף את ההקשר/השאלה הזאת: "${contextInput}"\n\n`;
+                    continuePrompt += `אנא הגב להקלט שלהם וספק תובנות נוספות. `;
+                    if (selectedSpeaker) {
+                        continuePrompt += `המשך להתמקד ב"${selectedSpeaker}" בשיחה. `;
+                    }
+                    continuePrompt += `שמור על הטון הדיאלוגי והאמפתי ופנה אליהם בגוף שני.\n\n`;
+                    continuePrompt += `תמליל מקורי:\n${currentTranscript}`;
+                } else {
+                    continuePrompt += `Previous analysis:\n${previousAnalysis}\n\n`;
+                    continuePrompt += `The user (${userName}) has added this context/question: "${contextInput}"\n\n`;
+                    continuePrompt += `Please respond to their input and provide additional insights. `;
+                    if (selectedSpeaker) {
+                        continuePrompt += `Continue focusing on "${selectedSpeaker}" in the conversation. `;
+                    }
+                    continuePrompt += `Keep the conversational, empathetic tone and address them in second person.\n\n`;
+                    continuePrompt += `Original transcript:\n${currentTranscript}`;
+                }
+                
+                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: continuePrompt,
+                        maxTokens: 600,
+                        language: analysisLanguage
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Continued analysis failed');
+                }
+                
+                const data = await response.json();
+                
+                const currentContent = document.getElementById('analysisContent').innerHTML;
+                const followUpLabel = analysisLanguage === 'he' ? 'המשך:' : 'Follow-up:';
+                document.getElementById('analysisContent').innerHTML = currentContent + '<br><br><strong>' + followUpLabel + '</strong><br>' + data.response.replace(/\n/g, '<br>');
+                document.getElementById('contextInput').value = '';
+                
+            } catch (error) {
+                console.error('Continue analysis error:', error);
+                if (error.message.includes('fetch')) {
+                    showError('Cannot connect to analysis server. Please make sure the backend server is running.');
+                } else {
+                    showError('Error continuing analysis: ' + error.message);
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function getSelectedSpeaker() {
+            const selectedRadio = document.querySelector('input[name="isMe"]:checked');
+            if (selectedRadio) {
+                const speakerIndex = parseInt(selectedRadio.value);
+                const speakerInputs = document.querySelectorAll('.speaker-name-input');
+                if (speakerInputs[speakerIndex]) {
+                    return speakerInputs[speakerIndex].value || speakers[speakerIndex];
+                }
+            }
+            return null;
+        }
+
+        function showLoading(message) {
+            // Remove existing loading indicators
+            document.querySelectorAll('.loading').forEach(el => el.remove());
+            
+            // Create loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.innerHTML = `
+                <div class="spinner"></div>
+                <span>${message}</span>
+            `;
+            
+            // Add to main card
+            document.querySelector('.main-card').appendChild(loadingDiv);
+        }
+
+        function hideLoading() {
+            document.querySelectorAll('.loading').forEach(el => el.remove());
+        }
+
+        function showError(message) {
+            // Remove existing error messages
+            document.querySelectorAll('.error').forEach(el => el.remove());
+            
+            // Create error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            
+            // Add to main card at the top
+            const mainCard = document.querySelector('.main-card');
+            mainCard.insertBefore(errorDiv, mainCard.firstChild);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            // Remove existing success messages
+            document.querySelectorAll('.success').forEach(el => el.remove());
+            
+            // Create success message
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.textContent = message;
+            
+            // Add to main card at the top
+            const mainCard = document.querySelector('.main-card');
+            mainCard.insertBefore(successDiv, mainCard.firstChild);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                successDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
