@@ -679,6 +679,9 @@
                 <button class="action-btn analyze" id="analyzeBtn" disabled>
                     🔍 Analyze My Behavior
                 </button>
+                <button class="action-btn" id="testConnectionBtn" style="background: #fd7e14; color: white;">
+                    🧪 Test OpenAI Connection
+                </button>
             </div>
 
             <!-- Conversation Management -->
@@ -824,6 +827,7 @@ Continue the flowing, conversational style and be responsive to their specific n
             document.getElementById('continueBtn').addEventListener('click', continueAnalysis);
             document.getElementById('saveConversationBtn').addEventListener('click', saveConversation);
             document.getElementById('newConversationBtn').addEventListener('click', startNewConversation);
+            document.getElementById('testConnectionBtn').addEventListener('click', testOpenAIConnection);
         }
 
         function setupMethodSwitching() {
@@ -1230,11 +1234,17 @@ Continue the flowing, conversational style and be responsive to their specific n
                 if (!response.ok) {
                     let errorData;
                     try {
-                        errorData = await response.json();
+                        // Clone the response to avoid "body stream already read" error
+                        const responseClone = response.clone();
+                        errorData = await responseClone.json();
                     } catch {
-                        // If response is not JSON, create error object
-                        const errorText = await response.text();
-                        errorData = { message: errorText || 'Analysis failed' };
+                        // If JSON parsing fails, read as text
+                        try {
+                            const errorText = await response.text();
+                            errorData = { message: errorText || 'Summary generation failed' };
+                        } catch {
+                            errorData = { message: 'Summary generation failed' };
+                        }
                     }
                     throw new Error(errorData.message || 'Summary generation failed');
                 }
@@ -1301,11 +1311,17 @@ Continue the flowing, conversational style and be responsive to their specific n
                 if (!response.ok) {
                     let errorData;
                     try {
-                        errorData = await response.json();
+                        // Clone the response to avoid "body stream already read" error
+                        const responseClone = response.clone();
+                        errorData = await responseClone.json();
                     } catch {
-                        // If response is not JSON, create error object
-                        const errorText = await response.text();
-                        errorData = { message: errorText || 'Analysis failed' };
+                        // If JSON parsing fails, read as text
+                        try {
+                            const errorText = await response.text();
+                            errorData = { message: errorText || 'Analysis failed' };
+                        } catch {
+                            errorData = { message: 'Analysis failed' };
+                        }
                     }
                     throw new Error(errorData.message || 'Analysis failed');
                 }
@@ -1378,11 +1394,17 @@ Continue the flowing, conversational style and be responsive to their specific n
                 if (!response.ok) {
                     let errorData;
                     try {
-                        errorData = await response.json();
+                        // Clone the response to avoid "body stream already read" error
+                        const responseClone = response.clone();
+                        errorData = await responseClone.json();
                     } catch {
-                        // If response is not JSON, create error object
-                        const errorText = await response.text();
-                        errorData = { message: errorText || 'Continued analysis failed' };
+                        // If JSON parsing fails, read as text
+                        try {
+                            const errorText = await response.text();
+                            errorData = { message: errorText || 'Continued analysis failed' };
+                        } catch {
+                            errorData = { message: 'Continued analysis failed' };
+                        }
                     }
                     throw new Error(errorData.message || 'Continued analysis failed');
                 }
@@ -1712,6 +1734,30 @@ Continue the flowing, conversational style and be responsive to their specific n
                 }
             } else {
                 indicator.classList.remove('active');
+            }
+        }
+
+        // Test OpenAI Connection
+        async function testOpenAIConnection() {
+            try {
+                showLoading('Testing OpenAI connection...');
+                
+                const response = await fetch(`${BACKEND_URL}/api/test`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess(`✅ OpenAI connection working! Test response: "${data.test_response}"`);
+                    console.log('OpenAI test result:', data);
+                } else {
+                    showError(`❌ OpenAI test failed: ${data.message}`);
+                    console.error('OpenAI test error:', data);
+                }
+                
+            } catch (error) {
+                showError(`❌ Connection test failed: ${error.message}`);
+                console.error('Test error:', error);
+            } finally {
+                hideLoading();
             }
         }
 
