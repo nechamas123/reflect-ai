@@ -44,14 +44,14 @@ export default async function handler(req, res) {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert conversation analyst and behavioral psychologist. Provide insightful, empathetic, and constructive analysis of conversations and behavior patterns. You understand Hebrew and English perfectly.'
+            content: 'You are an expert conversation analyst and behavioral psychologist. Provide insightful, empathetic, and constructive analysis of conversations and behavior patterns. You understand Hebrew and English perfectly. Always respond with clear, natural text without special formatting or structured patterns unless specifically requested.'
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        max_tokens: Math.min(maxTokens, 2000),
+        max_tokens: Math.min(maxTokens, 3000),
         temperature: 0.7
       })
     });
@@ -66,15 +66,16 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     
-    if (data.choices && data.choices[0] && data.choices[0].message) {
+    if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
       console.log('✅ Analysis completed');
       res.status(200).json({
-        response: data.choices[0].message.content,
+        response: data.choices[0].message.content.trim(),
         usage: data.usage,
         model: 'gpt-4'
       });
     } else {
-      throw new Error('No response from OpenAI');
+      console.error('❌ Invalid OpenAI response structure:', data);
+      throw new Error('Invalid response from OpenAI - no content found');
     }
 
   } catch (error) {

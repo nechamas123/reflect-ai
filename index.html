@@ -534,8 +534,21 @@ Please provide insights about:
 - Constructive advice for your future social interactions
 
 Write your analysis in a conversational, flowing paragraph addressing the user directly as "you." Be empathetic but honest, focusing on growth and self-awareness.</textarea>
+
+                <div class="prompt-title" style="margin-top: 20px;">🎯 Customize Continue Conversation Prompt</div>
+                <textarea id="continuePrompt" class="prompt-textarea" placeholder="Enter your custom prompt for continuing analysis...">You are continuing a conversation analysis based on the user's additional context and questions. Build upon the previous analysis while addressing their new input. Keep the same empathetic, conversational tone and continue addressing them in second person.
+
+Please:
+- Address their specific questions or context
+- Provide additional insights based on their input
+- Connect their new thoughts to the previous analysis
+- Offer practical advice or perspectives
+- Maintain the focus on growth and self-awareness
+
+Continue the flowing, conversational style and be responsive to their specific needs and questions.</textarea>
+                
                 <div style="margin-top: 10px; font-size: 14px; color: #666;">
-                    <strong>Note:</strong> When Hebrew is selected as analysis language, Hebrew prompts will be used automatically. These custom prompts apply only to English analysis.
+                    <strong>Note:</strong> These prompts are sent to OpenAI exactly as written. The system automatically adds language instructions and your transcript.
                 </div>
             </div>
 
@@ -570,6 +583,8 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
         let speakers = [];
         let currentMethod = 'record';
         let isRecording = false;
+        let liveTranscriptionInterval;
+        let recognitionService;
 
         // Backend Configuration - Vercel API routes
         const BACKEND_URL = window.location.origin;
@@ -637,6 +652,9 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 
+                // Initialize live transcription
+                startLiveTranscription();
+                
                 // Use audio formats that Whisper supports
                 let options = {};
                 if (MediaRecorder.isTypeSupported('audio/wav')) {
@@ -659,6 +677,9 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
                 };
 
                 mediaRecorder.onstop = async () => {
+                    // Stop live transcription
+                    stopLiveTranscription();
+                    
                     // Create blob with appropriate format
                     const mimeType = mediaRecorder.mimeType || 'audio/wav';
                     const audioBlob = new Blob(audioChunks, { type: mimeType });
@@ -671,6 +692,8 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
                     audioElement.src = audioUrl;
                     audioElement.classList.remove('hidden');
                     
+                    // Show final transcription process
+                    showFinalTranscription();
                     await transcribeAudio(audioBlob);
                     stream.getTracks().forEach(track => track.stop());
                 };
@@ -682,17 +705,109 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
                 document.getElementById('stopRecording').classList.remove('hidden');
                 document.getElementById('recordingStatus').classList.remove('hidden');
                 
-                showLiveTranscription();
-                
             } catch (error) {
                 showError('Error accessing microphone: ' + error.message);
             }
+        }
+
+        function startLiveTranscription() {
+            // Check for Web Speech API support
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognitionService = new SpeechRecognition();
+                
+                const conversationLanguage = document.getElementById('conversationLanguage').value;
+                recognitionService.lang = conversationLanguage === 'he' ? 'he-IL' : 'en-US';
+                recognitionService.continuous = true;
+                recognitionService.interimResults = true;
+                
+                let finalTranscript = '';
+                
+                recognitionService.onresult = (event) => {
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript + ' ';
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    
+                    // Update live transcript display
+                    const transcriptBox = document.getElementById('transcriptBox');
+                    transcriptBox.innerHTML = `
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                            <p><strong>🎙️ Live Transcription:</strong></p>
+                            <p style="margin-top: 10px; color: #333;">${finalTranscript}</p>
+                            <p style="margin-top: 5px; color: #666; font-style: italic;">${interimTranscript}</p>
+                        </div>
+                        <div style="background: #fff3cd; padding: 10px; border-radius: 8px; font-size: 14px; color: #856404;">
+                            <p><strong>Note:</strong> This is a live preview. Final transcription with speaker identification will be processed when you stop recording.</p>
+                        </div>
+                    `;
+                };
+                
+                recognitionService.onerror = (event) => {
+                    console.log('Live transcription error:', event.error);
+                    if (event.error === 'not-allowed') {
+                        showError('Microphone access denied. Please allow microphone access for live transcription.');
+                    }
+                };
+                
+                recognitionService.onend = () => {
+                    if (isRecording) {
+                        // Restart if still recording
+                        setTimeout(() => {
+                            if (isRecording) {
+                                recognitionService.start();
+                            }
+                        }, 1000);
+                    }
+                };
+                
+                try {
+                    recognitionService.start();
+                } catch (error) {
+                    console.log('Could not start live transcription:', error);
+                }
+            } else {
+                // Fallback to status message
+                const transcriptBox = document.getElementById('transcriptBox');
+                transcriptBox.innerHTML = `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center;">
+                        <p><strong>🎙️ Recording in progress...</strong></p>
+                        <p style="margin-top: 10px; color: #666;">Live transcription not available in this browser. Full transcript will appear when you stop recording.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function stopLiveTranscription() {
+            if (recognitionService) {
+                recognitionService.stop();
+                recognitionService = null;
+            }
+        }
+
+        function showFinalTranscription() {
+            const transcriptBox = document.getElementById('transcriptBox');
+            transcriptBox.innerHTML = `
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px; text-align: center;">
+                    <p><strong>🤖 Processing final transcription...</strong></p>
+                    <p style="margin-top: 10px; color: #666;">Using OpenAI Whisper for accurate transcription with speaker identification.</p>
+                </div>
+            `;
         }
 
         function stopRecording() {
             if (mediaRecorder && isRecording) {
                 mediaRecorder.stop();
                 isRecording = false;
+                
+                // Stop live transcription
+                stopLiveTranscription();
                 
                 // Update UI
                 document.getElementById('startRecording').classList.remove('hidden');
@@ -701,11 +816,7 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
             }
         }
 
-        // Fixed: Define the showLiveTranscription function
-        function showLiveTranscription() {
-            const transcriptBox = document.getElementById('transcriptBox');
-            transcriptBox.innerHTML = '<p style="color: #667eea; text-align: center;">🎙️ Recording in progress... Transcript will appear when you stop recording.</p>';
-        }
+        // Remove the old showLiveTranscription function as it's now integrated into startRecording
 
         async function handleFileUpload(event) {
             const file = event.target.files[0];
@@ -894,28 +1005,11 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
                 const customSummaryPrompt = document.getElementById('summaryPrompt').value;
                 
                 const languageInstruction = analysisLanguage === 'he' ? 
-                    'אנא השב בעברית בלבד. ' : 
+                    'Please respond in Hebrew only. ' : 
                     'Please respond in English only. ';
                 
-                let summaryPrompt = languageInstruction;
-                
-                if (analysisLanguage === 'he') {
-                    // Hebrew summary prompt
-                    summaryPrompt += `אתה מומחה לניתוח שיחות. צור סיכום מקיף של השיחה הבאה עבור המשתמש. פנה למשתמש ישירות בגוף שני לכל אורך הסיכום.
-
-אנא ארגן את הסיכום שלך לפי:
-- נושאים עיקריים שנדונו בשיחה שלך
-- נקודות מפתח והחלטות שהתקבלו
-- תובנות או גילויים חשובים שעלו
-- פריטי פעולה או צעדים הבאים שהוזכרו
-
-כתב בטון דיאלוגי, פנה למשתמש כ"אתה" והתייחס לתרומות הספציפיות שלו לדיון. היה יסודי אבל תמציתי.`;
-                } else {
-                    // English summary prompt (use custom)
-                    summaryPrompt += customSummaryPrompt;
-                }
-                
-                summaryPrompt += `\n\nשם המשתמש: ${userName}\n\nתמליל השיחה:\n${currentTranscript}`;
+                let summaryPrompt = languageInstruction + customSummaryPrompt;
+                summaryPrompt += `\n\nUser name: ${userName}\n\nConversation transcript:\n${currentTranscript}`;
                 
                 const response = await fetch(`${BACKEND_URL}/api/analyze`, {
                     method: 'POST',
@@ -924,7 +1018,7 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
                     },
                     body: JSON.stringify({
                         prompt: summaryPrompt,
-                        maxTokens: 500,
+                        maxTokens: 1000,
                         language: analysisLanguage
                     })
                 });
@@ -966,35 +1060,15 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
                 showLoading('Analyzing your conversation...');
                 
                 const languageInstruction = analysisLanguage === 'he' ? 
-                    'אנא השב בעברית בלבד. ' : 
+                    'Please respond in Hebrew only. ' : 
                     'Please respond in English only. ';
                 
-                let analysisPrompt = languageInstruction;
-                
-                if (analysisLanguage === 'he') {
-                    // Hebrew version of the analysis prompt
-                    analysisPrompt += `אתה מומחה לניתוח שיחות ופסיכולוג התנהגותי. נתח את תמליל השיחה הבא, תוך התמקדות ספציפית בהתנהגות של המשתמש, דפוסי התקשורת והדינמיקה החברתית. פנה למשתמש ישירות בגוף שני לכל אורך הניתוח.
-
-אנא ספק תובנות על:
-- סגנון התקשורת והדפוסים שלך
-- איך אתה מתקשר עם אחרים בשיחה
-- תובנות התנהגותיות או תחומים לשיפור שאתה יכול לשקול
-- בעיות או דפוסים בסיסיים שכדאי שתהיה מודע אליהם
-- עצות בונות לאינטראקציות חברתיות עתידיות שלך
-
-כתב את הניתוח שלך בפסקה שוטפת ודיאלוגית, פונה למשתמש ישירות כ"אתה". היה אמפתי אבל כנה, תוך התמקדות בצמיחה ומודעות עצמית.`;
-                } else {
-                    // English version (use custom prompt)
-                    analysisPrompt += customPrompt;
-                }
-                
-                analysisPrompt += `\n\nשם המשתמש: ${userName}\n`;
+                let analysisPrompt = languageInstruction + customPrompt;
+                analysisPrompt += `\n\nUser name: ${userName}\n`;
                 if (selectedSpeaker) {
-                    analysisPrompt += analysisLanguage === 'he' ?
-                        `התמקד ספציפית בהתנהגות ובדפוסי התקשורת של "${selectedSpeaker}" בשיחה הזאת. ` :
-                        `Focus specifically on the behavior and communication patterns of "${selectedSpeaker}" in this conversation. `;
+                    analysisPrompt += `Focus specifically on the behavior and communication patterns of "${selectedSpeaker}" in this conversation. `;
                 }
-                analysisPrompt += `\n\nתמליל השיחה:\n${currentTranscript}`;
+                analysisPrompt += `\n\nConversation transcript:\n${currentTranscript}`;
                 
                 const response = await fetch(`${BACKEND_URL}/api/analyze`, {
                     method: 'POST',
@@ -1003,7 +1077,7 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
                     },
                     body: JSON.stringify({
                         prompt: analysisPrompt,
-                        maxTokens: 800,
+                        maxTokens: 1500,
                         language: analysisLanguage
                     })
                 });
@@ -1042,35 +1116,24 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
             const selectedSpeaker = getSelectedSpeaker();
             const previousAnalysis = document.getElementById('analysisContent').innerHTML.replace(/<br>/g, '\n');
             const analysisLanguage = document.getElementById('analysisLanguage').value;
+            const continuePrompt = document.getElementById('continuePrompt').value;
             
             try {
                 showLoading('Continuing analysis...');
                 
                 const languageInstruction = analysisLanguage === 'he' ? 
-                    'אנא השב בעברית בלבד. ' : 
+                    'Please respond in Hebrew only. ' : 
                     'Please respond in English only. ';
                 
-                let continuePrompt = languageInstruction;
-                
-                if (analysisLanguage === 'he') {
-                    continuePrompt += `ניתוח קודם:\n${previousAnalysis}\n\n`;
-                    continuePrompt += `המשתמש (${userName}) הוסיף את ההקשר/השאלה הזאת: "${contextInput}"\n\n`;
-                    continuePrompt += `אנא הגב להקלט שלהם וספק תובנות נוספות. `;
-                    if (selectedSpeaker) {
-                        continuePrompt += `המשך להתמקד ב"${selectedSpeaker}" בשיחה. `;
-                    }
-                    continuePrompt += `שמור על הטון הדיאלוגי והאמפתי ופנה אליהם בגוף שני.\n\n`;
-                    continuePrompt += `תמליל מקורי:\n${currentTranscript}`;
-                } else {
-                    continuePrompt += `Previous analysis:\n${previousAnalysis}\n\n`;
-                    continuePrompt += `The user (${userName}) has added this context/question: "${contextInput}"\n\n`;
-                    continuePrompt += `Please respond to their input and provide additional insights. `;
-                    if (selectedSpeaker) {
-                        continuePrompt += `Continue focusing on "${selectedSpeaker}" in the conversation. `;
-                    }
-                    continuePrompt += `Keep the conversational, empathetic tone and address them in second person.\n\n`;
-                    continuePrompt += `Original transcript:\n${currentTranscript}`;
+                let fullPrompt = languageInstruction + continuePrompt;
+                fullPrompt += `\n\nPrevious analysis:\n${previousAnalysis}\n\n`;
+                fullPrompt += `The user (${userName}) has added this context/question: "${contextInput}"\n\n`;
+                fullPrompt += `Please respond to their input and provide additional insights. `;
+                if (selectedSpeaker) {
+                    fullPrompt += `Continue focusing on "${selectedSpeaker}" in the conversation. `;
                 }
+                fullPrompt += `Keep the conversational, empathetic tone and address them in second person.\n\n`;
+                fullPrompt += `Original transcript:\n${currentTranscript}`;
                 
                 const response = await fetch(`${BACKEND_URL}/api/analyze`, {
                     method: 'POST',
@@ -1078,8 +1141,8 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        prompt: continuePrompt,
-                        maxTokens: 600,
+                        prompt: fullPrompt,
+                        maxTokens: 1000,
                         language: analysisLanguage
                     })
                 });
