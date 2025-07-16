@@ -287,175 +287,67 @@
             transform: none;
         }
 
-        .conversation-management {
-            margin-bottom: 30px;
+        .results-section {
+            margin-top: 30px;
         }
 
-        .conversation-controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .conversation-btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .conversation-btn.save {
-            background: #28a745;
-            color: white;
-        }
-
-        .conversation-btn.new {
-            background: #6c757d;
-            color: white;
-        }
-
-        .conversation-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .conversation-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .saved-conversations-section {
+        .result-box {
             background: #f8f9fa;
             border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .saved-conversations-section h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .saved-conversations-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .conversation-item {
-            background: white;
-            border: 2px solid #e0e0e0;
             border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
-            transition: all 0.3s;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        .conversation-item:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .conversation-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .conversation-title {
+        .result-title {
+            font-size: 1.5rem;
             font-weight: 600;
             color: #333;
-            flex: 1;
+            margin-bottom: 15px;
         }
 
-        .conversation-date {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .conversation-preview {
+        .result-content {
+            line-height: 1.6;
             color: #555;
-            font-size: 14px;
-            margin-bottom: 10px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
-        .conversation-actions {
+        .loading {
             display: flex;
+            align-items: center;
             gap: 10px;
-        }
-
-        .conversation-action-btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 15px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .conversation-action-btn.load {
-            background: #007bff;
-            color: white;
-        }
-
-        .conversation-action-btn.delete {
-            background: #dc3545;
-            color: white;
-        }
-
-        .conversation-action-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .conversation-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-right: 8px;
-        }
-
-        .conversation-badge.recorded {
-            background: #28a745;
-            color: white;
-        }
-
-        .conversation-badge.uploaded {
-            background: #17a2b8;
-            color: white;
-        }
-
-        .conversation-badge.typed {
-            background: #6f42c1;
-            color: white;
-        }
-
-        .current-conversation-indicator {
+            color: #666;
             background: #fff3cd;
             border: 2px solid #ffeaa7;
             border-radius: 10px;
-            padding: 10px;
+            padding: 15px;
             margin-bottom: 20px;
-            display: none;
         }
 
-        .current-conversation-indicator.active {
-            display: block;
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
         }
 
         .model-tooltip {
@@ -511,112 +403,6 @@
             margin: 0;
             font-size: 13px;
             color: #666;
-        }
-
-        @media (max-width: 768px) {
-            .ai-model-info .model-comparison {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-        }
-
-        .results-section {
-            margin-top: 30px;
-        }
-
-        .result-box {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .result-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .result-content {
-            line-height: 1.6;
-            color: #555;
-        }
-
-        .prompt-section {
-            background: #fff3cd;
-            border: 2px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .prompt-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #856404;
-        }
-
-        .prompt-textarea {
-            height: 120px;
-            resize: vertical;
-        }
-
-        .context-section {
-            background: #d1ecf1;
-            border: 2px solid #bee5eb;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .loading {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #666;
-            background: #fff3cd;
-            border: 2px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .error {
-            background: #f8d7da;
-            border: 2px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .success {
-            background: #d4edda;
-            border: 2px solid #c3e6cb;
-            color: #155724;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
         }
 
         @media (max-width: 768px) {
@@ -678,6 +464,8 @@
                             <option value="he">Hebrew</option>
                         </select>
                     </div>
+                </div>
+                <div class="settings-row">
                     <div class="setting-group">
                         <label for="relationshipType">Relationship Type:</label>
                         <select id="relationshipType">
@@ -689,8 +477,6 @@
                             <option value="other">🔧 Other (specify below)</option>
                         </select>
                     </div>
-                </div>
-                <div class="settings-row">
                     <div class="setting-group">
                         <label for="customRelationship">Custom Relationship (if "Other" selected):</label>
                         <input type="text" id="customRelationship" placeholder="e.g., therapist-client, teacher-student...">
@@ -704,6 +490,21 @@
                         <div class="model-tooltip" id="modelTooltip">
                             <strong>⚡ ChatGPT-3.5:</strong> Quick response, lower cost. Great for short or casual analysis.
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Model Information -->
+            <div class="ai-model-info">
+                <strong>🤖 AI Model Selection:</strong> Choose the right model for your needs
+                <div class="model-comparison">
+                    <div class="model-option" id="gpt35Option">
+                        <h4>⚡ ChatGPT-3.5</h4>
+                        <p><strong>Fast & Efficient:</strong> Quick response (2-5 sec), lower cost. Handles conversations up to 1 hour well. Great for quick insights.</p>
+                    </div>
+                    <div class="model-option" id="gpt4Option">
+                        <h4>🔍 ChatGPT-4</h4>
+                        <p><strong>Deep & Comprehensive:</strong> Slower response (10-60 sec), higher cost. Excellent for 2+ hour conversations, complex emotions, and nuanced analysis.</p>
                     </div>
                 </div>
             </div>
@@ -778,87 +579,6 @@
                 </button>
             </div>
 
-            <!-- AI Model Information -->
-            <div class="ai-model-info">
-                <strong>🤖 AI Model Selection:</strong> Choose the right model for your needs
-                <div class="model-comparison">
-                    <div class="model-option" id="gpt35Option">
-                        <h4>⚡ ChatGPT-3.5</h4>
-                        <p><strong>Fast & Efficient:</strong> Quick response (2-5 sec), lower cost. Handles conversations up to 1 hour well. Great for quick insights.</p>
-                    </div>
-                    <div class="model-option" id="gpt4Option">
-                        <h4>🔍 ChatGPT-4</h4>
-                        <p><strong>Deep & Comprehensive:</strong> Slower response (10-60 sec), higher cost. Excellent for 2+ hour conversations, complex emotions, and nuanced analysis.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Conversation Management -->
-            <div class="conversation-management">
-                <!-- Current Conversation Indicator -->
-                <div class="current-conversation-indicator" id="currentConversationIndicator">
-                    <strong>📝 Current Conversation:</strong> New conversation
-                </div>
-                
-                <div class="conversation-controls">
-                    <button class="conversation-btn save" id="saveConversationBtn" disabled>
-                        💾 Save Conversation
-                    </button>
-                    <button class="conversation-btn new" id="newConversationBtn">
-                        🆕 New Conversation
-                    </button>
-                </div>
-                
-                <div class="saved-conversations-section" id="savedConversationsSection">
-                    <h3>💬 Saved Conversations</h3>
-                    <div class="saved-conversations-list" id="savedConversationsList">
-                        <p style="color: #666; text-align: center; padding: 20px;">No saved conversations yet...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI Prompt Customization -->
-            <div class="prompt-section">
-                <div class="prompt-title">🎯 Customize Summary Prompt</div>
-                <textarea id="summaryPrompt" class="prompt-textarea" placeholder="Enter your custom prompt for summary generation...">You are an expert conversation analyst. Create a comprehensive summary of the following conversation for the user. Address the user directly in second person throughout your summary.
-
-Please organize your summary by:
-- Main topics discussed in your conversation
-- Key points and decisions made
-- Important insights or revelations that came up
-- Any action items or next steps mentioned
-
-Write in a conversational tone, addressing the user as "you" and referring to their specific contributions to the discussion. Be thorough but concise.</textarea>
-                
-                <div class="prompt-title" style="margin-top: 20px;">🎯 Customize Analysis Prompt</div>
-                <textarea id="aiPrompt" class="prompt-textarea" placeholder="Enter your custom prompt for AI analysis...">You are an expert conversation analyst and behavioral psychologist. Analyze the following conversation transcript, focusing specifically on the user's behavior, communication patterns, and social dynamics. Address the user directly in second person throughout your analysis.
-
-Please provide insights about:
-- Your communication style and patterns
-- How you interact with others in the conversation
-- Any behavioral insights or areas for improvement you might consider
-- Underlying issues or patterns you might want to be aware of
-- Constructive advice for your future social interactions
-
-Write your analysis in a conversational, flowing paragraph addressing the user directly as "you." Be empathetic but honest, focusing on growth and self-awareness.</textarea>
-
-                <div class="prompt-title" style="margin-top: 20px;">🎯 Customize Continue Conversation Prompt</div>
-                <textarea id="continuePrompt" class="prompt-textarea" placeholder="Enter your custom prompt for continuing analysis...">You are continuing a conversation analysis based on the user's additional context and questions. Build upon the previous analysis while addressing their new input. Keep the same empathetic, conversational tone and continue addressing them in second person.
-
-Please:
-- Address their specific questions or context
-- Provide additional insights based on their input
-- Connect their new thoughts to the previous analysis
-- Offer practical advice or perspectives
-- Maintain the focus on growth and self-awareness
-
-Continue the flowing, conversational style and be responsive to their specific needs and questions.</textarea>
-                
-                <div style="margin-top: 10px; font-size: 14px; color: #666;">
-                    <strong>Note:</strong> These prompts are sent to OpenAI exactly as written. The system automatically adds language instructions and your transcript.
-                </div>
-            </div>
-
             <!-- Results Section -->
             <div class="results-section">
                 <div class="result-box hidden" id="summaryResult">
@@ -869,14 +589,6 @@ Continue the flowing, conversational style and be responsive to their specific n
                 <div class="result-box hidden" id="analysisResult">
                     <div class="result-title">🔍 Your Behavioral Analysis</div>
                     <div class="result-content" id="analysisContent"></div>
-                </div>
-
-                <div class="context-section hidden" id="contextSection">
-                    <label for="contextInput">Add more context or continue the conversation:</label>
-                    <textarea id="contextInput" rows="3" placeholder="Add your thoughts, context, or ask follow-up questions..."></textarea>
-                    <button class="action-btn analyze" id="continueBtn" style="margin-top: 10px;">
-                        💬 Continue Analysis
-                    </button>
                 </div>
             </div>
         </div>
@@ -891,108 +603,41 @@ Continue the flowing, conversational style and be responsive to their specific n
         let currentMethod = 'record';
         let isRecording = false;
         let recognitionService;
-        let currentConversationId = null;
-        let savedConversations = [];
 
-        // Backend Configuration - Vercel API routes
+        // Backend Configuration
         const BACKEND_URL = window.location.origin;
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing Reflect AI...');
             initializeEventListeners();
             setupMethodSwitching();
             testBackendConnection();
-            loadSavedConversations();
             updateModelTooltip();
         });
 
-        async function testBackendConnection() {
-            try {
-                const response = await fetch(`${BACKEND_URL}/api/health`);
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('✅ Backend connected successfully:', data);
-                    
-                    // Show success indicator
-                    showSuccess('🟢 Backend server connected - Secure transcription and analysis available!');
-                } else {
-                    throw new Error(`Server responded with status ${response.status}`);
-                }
-            } catch (error) {
-                console.log('❌ Backend connection failed:', error.message);
-                
-                // Show warning indicator
-                showError('🟡 Backend offline - Please start the backend server for full functionality');
-            }
-        }
-
         function initializeEventListeners() {
-            console.log('🔧 Initializing event listeners...');
+            console.log('🔧 Setting up event listeners...');
             
+            // Recording controls
             document.getElementById('startRecording').addEventListener('click', startRecording);
             document.getElementById('stopRecording').addEventListener('click', stopRecording);
+            
+            // File upload
             document.getElementById('audioFile').addEventListener('change', handleFileUpload);
+            
+            // Text input
             document.getElementById('conversationText').addEventListener('input', handleTextInput);
             
-            // Check if buttons exist before adding listeners
-            const summaryBtn = document.getElementById('summaryBtn');
-            const analyzeBtn = document.getElementById('analyzeBtn');
-            const continueBtn = document.getElementById('continueBtn');
-            const saveBtn = document.getElementById('saveConversationBtn');
-            const newBtn = document.getElementById('newConversationBtn');
-            const testBtn = document.getElementById('testConnectionBtn');
-            const modelSelect = document.getElementById('aiModel');
+            // Action buttons
+            document.getElementById('summaryBtn').addEventListener('click', generateSummary);
+            document.getElementById('analyzeBtn').addEventListener('click', analyzeConversation);
+            document.getElementById('testConnectionBtn').addEventListener('click', testOpenAIConnection);
             
-            if (summaryBtn) {
-                summaryBtn.addEventListener('click', generateSummary);
-                console.log('✅ Summary button listener added');
-            } else {
-                console.error('❌ Summary button not found');
-            }
+            // Model selection
+            document.getElementById('aiModel').addEventListener('change', updateModelTooltip);
             
-            if (analyzeBtn) {
-                analyzeBtn.addEventListener('click', analyzeConversation);
-                console.log('✅ Analyze button listener added');
-            } else {
-                console.error('❌ Analyze button not found');
-            }
-            
-            if (continueBtn) {
-                continueBtn.addEventListener('click', continueAnalysis);
-                console.log('✅ Continue button listener added');
-            } else {
-                console.error('❌ Continue button not found');
-            }
-            
-            if (saveBtn) {
-                saveBtn.addEventListener('click', saveConversation);
-                console.log('✅ Save button listener added');
-            } else {
-                console.error('❌ Save button not found');
-            }
-            
-            if (newBtn) {
-                newBtn.addEventListener('click', startNewConversation);
-                console.log('✅ New conversation button listener added');
-            } else {
-                console.error('❌ New conversation button not found');
-            }
-            
-            if (testBtn) {
-                testBtn.addEventListener('click', testOpenAIConnection);
-                console.log('✅ Test connection button listener added');
-            } else {
-                console.error('❌ Test connection button not found');
-            }
-            
-            if (modelSelect) {
-                modelSelect.addEventListener('change', updateModelTooltip);
-                console.log('✅ Model select listener added');
-            } else {
-                console.error('❌ Model select not found');
-            }
-            
-            console.log('🔧 Event listeners initialization complete');
+            console.log('✅ Event listeners ready');
         }
 
         function setupMethodSwitching() {
@@ -1017,28 +662,36 @@ Continue the flowing, conversational style and be responsive to their specific n
             });
         }
 
+        async function testBackendConnection() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Backend connected:', data.message);
+                    showSuccess('🟢 Backend server connected - Ready to transcribe and analyze!');
+                } else {
+                    throw new Error(`Server responded with status ${response.status}`);
+                }
+            } catch (error) {
+                console.log('❌ Backend connection failed:', error.message);
+                showError('🟡 Backend offline - Please check server status');
+            }
+        }
+
         async function startRecording() {
             try {
+                console.log('🎙️ Starting recording...');
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 
-                // Initialize live transcription
-                startLiveTranscription();
-                
-                // Use audio formats that Whisper supports
+                // Use best available audio format
                 let options = {};
                 if (MediaRecorder.isTypeSupported('audio/wav')) {
                     options = { mimeType: 'audio/wav' };
-                } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
-                    options = { mimeType: 'audio/mp4' };
-                } else if (MediaRecorder.isTypeSupported('audio/ogg')) {
-                    options = { mimeType: 'audio/ogg' };
                 } else if (MediaRecorder.isTypeSupported('audio/webm')) {
                     options = { mimeType: 'audio/webm' };
                 }
                 
                 mediaRecorder = new MediaRecorder(stream, options);
-                console.log('🎙️ Recording with format:', mediaRecorder.mimeType);
-                
                 audioChunks = [];
 
                 mediaRecorder.ondataavailable = event => {
@@ -1046,161 +699,57 @@ Continue the flowing, conversational style and be responsive to their specific n
                 };
 
                 mediaRecorder.onstop = async () => {
-                    // Stop live transcription
-                    stopLiveTranscription();
+                    const audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/wav' });
                     
-                    // Create blob with appropriate format
-                    const mimeType = mediaRecorder.mimeType || 'audio/wav';
-                    const audioBlob = new Blob(audioChunks, { type: mimeType });
-                    
-                    console.log('📄 Audio blob type:', audioBlob.type);
-                    console.log('📊 Audio blob size:', audioBlob.size, 'bytes');
-                    
+                    // Show audio player
                     const audioUrl = URL.createObjectURL(audioBlob);
                     const audioElement = document.getElementById('audioPlayback');
                     audioElement.src = audioUrl;
                     audioElement.classList.remove('hidden');
                     
-                    // Show final transcription process
-                    showFinalTranscription();
+                    // Transcribe audio
                     await transcribeAudio(audioBlob);
+                    
+                    // Clean up
                     stream.getTracks().forEach(track => track.stop());
                 };
 
                 mediaRecorder.start();
                 isRecording = true;
                 
+                // Update UI
                 document.getElementById('startRecording').classList.add('hidden');
                 document.getElementById('stopRecording').classList.remove('hidden');
                 document.getElementById('recordingStatus').classList.remove('hidden');
                 
+                showTranscriptMessage('🎙️ Recording in progress... Press stop when finished.');
+                
             } catch (error) {
+                console.error('Recording error:', error);
                 showError('Error accessing microphone: ' + error.message);
             }
         }
 
-        function startLiveTranscription() {
-            // Check for Web Speech API support
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognitionService = new SpeechRecognition();
-                
-                const conversationLanguage = document.getElementById('conversationLanguage').value;
-                recognitionService.lang = conversationLanguage === 'he' ? 'he-IL' : 'en-US';
-                recognitionService.continuous = true;
-                recognitionService.interimResults = true;
-                
-                let finalTranscript = '';
-                
-                recognitionService.onresult = (event) => {
-                    let interimTranscript = '';
-                    
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        const transcript = event.results[i][0].transcript;
-                        if (event.results[i].isFinal) {
-                            finalTranscript += transcript + ' ';
-                        } else {
-                            interimTranscript += transcript;
-                        }
-                    }
-                    
-                    // Update live transcript display
-                    const transcriptBox = document.getElementById('transcriptBox');
-                    transcriptBox.innerHTML = `
-                        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                            <p><strong>🎙️ Live Transcription:</strong></p>
-                            <p style="margin-top: 10px; color: #333;">${finalTranscript}</p>
-                            <p style="margin-top: 5px; color: #666; font-style: italic;">${interimTranscript}</p>
-                        </div>
-                        <div style="background: #fff3cd; padding: 10px; border-radius: 8px; font-size: 14px; color: #856404;">
-                            <p><strong>Note:</strong> This is a live preview. Final transcription with speaker identification will be processed when you stop recording.</p>
-                        </div>
-                    `;
-                };
-                
-                recognitionService.onerror = (event) => {
-                    console.log('Live transcription error:', event.error);
-                    if (event.error === 'not-allowed') {
-                        showError('Microphone access denied. Please allow microphone access for live transcription.');
-                    }
-                };
-                
-                recognitionService.onend = () => {
-                    if (isRecording) {
-                        // Restart if still recording
-                        setTimeout(() => {
-                            if (isRecording) {
-                                recognitionService.start();
-                            }
-                        }, 1000);
-                    }
-                };
-                
-                try {
-                    recognitionService.start();
-                } catch (error) {
-                    console.log('Could not start live transcription:', error);
-                }
-            } else {
-                // Fallback to status message
-                const transcriptBox = document.getElementById('transcriptBox');
-                transcriptBox.innerHTML = `
-                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center;">
-                        <p><strong>🎙️ Recording in progress...</strong></p>
-                        <p style="margin-top: 10px; color: #666;">Live transcription not available in this browser. Full transcript will appear when you stop recording.</p>
-                    </div>
-                `;
-            }
-        }
-
-        function stopLiveTranscription() {
-            if (recognitionService) {
-                recognitionService.stop();
-                recognitionService = null;
-            }
-        }
-
-        function showFinalTranscription() {
-            const transcriptBox = document.getElementById('transcriptBox');
-            transcriptBox.innerHTML = `
-                <div style="background: #fff3cd; padding: 15px; border-radius: 8px; text-align: center;">
-                    <p><strong>🤖 Processing final transcription...</strong></p>
-                    <p style="margin-top: 10px; color: #666;">Using OpenAI Whisper for accurate transcription with speaker identification.</p>
-                </div>
-            `;
-        }
-
         function stopRecording() {
             if (mediaRecorder && isRecording) {
+                console.log('⏹️ Stopping recording...');
                 mediaRecorder.stop();
                 isRecording = false;
-                
-                // Stop live transcription
-                stopLiveTranscription();
                 
                 // Update UI
                 document.getElementById('startRecording').classList.remove('hidden');
                 document.getElementById('stopRecording').classList.add('hidden');
                 document.getElementById('recordingStatus').classList.add('hidden');
+                
+                showTranscriptMessage('🤖 Processing your recording...');
             }
         }
 
         async function handleFileUpload(event) {
             const file = event.target.files[0];
             if (file) {
-                // Show the uploaded file info
-                const transcriptBox = document.getElementById('transcriptBox');
-                transcriptBox.innerHTML = `
-                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
-                        <p><strong>📁 File uploaded:</strong> ${file.name}</p>
-                        <p style="color: #666; margin-top: 5px;">File size: ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                        <p style="color: #28a745; margin-top: 10px;">
-                            🚀 Connecting to transcription server...
-                        </p>
-                    </div>
-                `;
-                
-                // Transcribe the uploaded file
+                console.log('📁 File uploaded:', file.name);
+                showTranscriptMessage(`📁 File uploaded: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
                 await transcribeAudio(file);
             }
         }
@@ -1208,9 +757,8 @@ Continue the flowing, conversational style and be responsive to their specific n
         function handleTextInput() {
             const text = document.getElementById('conversationText').value;
             if (text.trim()) {
-                // Parse the text into speaker format
-                const lines = text.split('\n').filter(line => line.trim());
-                currentTranscript = lines.join('\n');
+                console.log('✍️ Text input received');
+                currentTranscript = text.trim();
                 displayTranscript(currentTranscript);
                 enableActionButtons();
             }
@@ -1218,46 +766,29 @@ Continue the flowing, conversational style and be responsive to their specific n
 
         async function transcribeAudio(audioBlob) {
             try {
-                showLoading('Transcribing with Whisper AI...');
+                showLoading('Transcribing with OpenAI Whisper...');
                 
-                // Test backend connection
-                const healthCheck = await fetch(`${BACKEND_URL}/api/health`);
-                if (!healthCheck.ok) {
-                    throw new Error('Backend server is not responding');
-                }
-                
-                // Create FormData for Whisper backend
+                // Create FormData
                 const formData = new FormData();
                 
-                // Determine appropriate filename
+                // Determine filename
                 let filename = 'recording.wav';
-                if (audioBlob.type.includes('mp4')) {
-                    filename = 'recording.mp4';
-                } else if (audioBlob.type.includes('ogg')) {
-                    filename = 'recording.ogg';
-                } else if (audioBlob.type.includes('webm')) {
+                if (audioBlob.type.includes('webm')) {
                     filename = 'recording.webm';
+                } else if (audioBlob.type.includes('mp4')) {
+                    filename = 'recording.mp4';
                 }
-                
-                console.log('📤 Uploading as:', filename, 'Type:', audioBlob.type);
                 
                 formData.append('audio', audioBlob, filename);
                 formData.append('language', document.getElementById('conversationLanguage').value);
                 
-                // Send to Whisper backend
                 const response = await fetch(`${BACKEND_URL}/api/transcribe`, {
                     method: 'POST',
                     body: formData
                 });
                 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    let errorData;
-                    try {
-                        errorData = JSON.parse(errorText);
-                    } catch {
-                        errorData = { message: errorText };
-                    }
+                    const errorData = await response.json().catch(() => ({ message: 'Transcription failed' }));
                     throw new Error(errorData.message || `Transcription failed: ${response.status}`);
                 }
                 
@@ -1267,52 +798,236 @@ Continue the flowing, conversational style and be responsive to their specific n
                     currentTranscript = data.transcript;
                     displayTranscript(currentTranscript);
                     enableActionButtons();
-                    showSuccess(`✅ Transcription completed! Language: ${data.language}, Service: ${data.transcription_service}`);
+                    showSuccess(`✅ Transcription completed! Language: ${data.language}`);
                 } else {
-                    throw new Error('Transcription incomplete: ' + data.message);
+                    throw new Error('Transcription incomplete');
                 }
                 
             } catch (error) {
                 console.error('Transcription error:', error);
-                hideLoading();
-                
-                if (error.message.includes('Backend server')) {
-                    showError('❌ Cannot connect to backend server. Please make sure it\'s running.');
-                } else if (error.message.includes('Unrecognized file format')) {
-                    showError('❌ Audio format not supported. Try using "Upload Audio" with an MP3 or WAV file.');
-                } else {
-                    showError('Transcription failed: ' + error.message);
-                }
+                showError('Transcription failed: ' + error.message);
             } finally {
                 hideLoading();
             }
         }
 
-        function updateModelTooltip() {
-            const selectedModel = document.getElementById('aiModel').value;
-            const tooltip = document.getElementById('modelTooltip');
-            const gpt35Option = document.getElementById('gpt35Option');
-            const gpt4Option = document.getElementById('gpt4Option');
+        async function generateSummary() {
+            if (!currentTranscript) {
+                showError('No transcript available to summarize.');
+                return;
+            }
             
-            // Update tooltip text
-            if (selectedModel === 'gpt-4') {
-                tooltip.innerHTML = '<strong>🔍 ChatGPT-4:</strong> Slower but more intelligent. Perfect for long conversations (2+ hours), complex emotions, and deep psychological insights.';
-                tooltip.style.background = '#f8e6ff';
-                tooltip.style.borderColor = '#d4c5f9';
-                tooltip.style.color = '#5a2d82';
+            try {
+                console.log('📋 Generating summary...');
+                showLoading('Generating summary...');
                 
-                // Update visual selection
-                gpt4Option.classList.add('selected');
-                gpt35Option.classList.remove('selected');
-            } else {
-                tooltip.innerHTML = '<strong>⚡ ChatGPT-3.5:</strong> Quick response, lower cost. Handles conversations up to 1 hour well. Great for fast insights.';
-                tooltip.style.background = '#e8f4fd';
-                tooltip.style.borderColor = '#bee5eb';
-                tooltip.style.color = '#0c5460';
+                const userName = document.getElementById('userName').value || 'User';
+                const analysisLanguage = document.getElementById('analysisLanguage').value;
+                const relationshipType = document.getElementById('relationshipType').value;
+                const customRelationship = document.getElementById('customRelationship').value;
+                const selectedModel = document.getElementById('aiModel').value;
                 
-                // Update visual selection
-                gpt35Option.classList.add('selected');
-                gpt4Option.classList.remove('selected');
+                // Determine relationship context
+                let relationshipContext = '';
+                if (relationshipType === 'other' && customRelationship.trim()) {
+                    relationshipContext = customRelationship.trim();
+                } else {
+                    const relationshipMap = {
+                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
+                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
+                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
+                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
+                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
+                    };
+                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
+                }
+                
+                let prompt;
+                if (analysisLanguage === 'he') {
+                    prompt = `אתה מומחה לניתוח שיחות ומאמן אישי. אני רוצה שתכין לי סיכום ברור ושימושי של השיחה שלי. דבר אליי ישירות בגוף שני בעברית טבעית ושוטפת.
+
+השיחה הזאת היא בין ${relationshipContext}. קח את זה בחשבון בסיכום. שמי ${userName}.
+
+אני רוצה שתארגן את הסיכום לפי:
+- הנושאים העיקריים שדיברנו עליהם
+- נקודות חשובות והחלטות שהתקבלו
+- תובנות או דברים חדשים שעלו בשיחה
+- משימות או צעדים הבאים שהוזכרו
+
+כתוב בטון אישי וחם, פנה אליי כ"אתה" והתייחס לתרומה שלי לשיחה. תן לי סיכום מפורט אבל לא ארוך מדי.
+
+תמליל השיחה:
+${currentTranscript}`;
+                } else {
+                    prompt = `You are an expert conversation analyst and personal coach. Create a comprehensive summary of the following conversation for ${userName}. 
+
+This conversation is between ${relationshipContext}. Keep this relationship context in mind for your summary.
+
+Please organize your summary by:
+- Main topics discussed in the conversation
+- Key points and decisions made  
+- Important insights or revelations that came up
+- Any action items or next steps mentioned
+
+Write in a conversational tone, addressing the user as "you" and referring to their specific contributions to the discussion. Be thorough but concise.
+
+Conversation transcript:
+${currentTranscript}`;
+                }
+                
+                const maxTokens = selectedModel === 'gpt-4' ? 3000 : 2000;
+                
+                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        maxTokens: maxTokens,
+                        language: analysisLanguage,
+                        model: selectedModel
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: 'Summary generation failed' }));
+                    throw new Error(errorData.message || 'Summary generation failed');
+                }
+                
+                const data = await response.json();
+                
+                document.getElementById('summaryContent').innerHTML = data.response.replace(/\n/g, '<br>');
+                document.getElementById('summaryResult').classList.remove('hidden');
+                
+                showSuccess('✅ Summary generated successfully!');
+                
+            } catch (error) {
+                console.error('Summary error:', error);
+                showError('Error generating summary: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function analyzeConversation() {
+            if (!currentTranscript) {
+                showError('No transcript available to analyze.');
+                return;
+            }
+            
+            try {
+                console.log('🔍 Analyzing conversation...');
+                showLoading('Analyzing your conversation...');
+                
+                const userName = document.getElementById('userName').value || 'User';
+                const analysisLanguage = document.getElementById('analysisLanguage').value;
+                const relationshipType = document.getElementById('relationshipType').value;
+                const customRelationship = document.getElementById('customRelationship').value;
+                const selectedModel = document.getElementById('aiModel').value;
+                
+                // Determine relationship context
+                let relationshipContext = '';
+                if (relationshipType === 'other' && customRelationship.trim()) {
+                    relationshipContext = customRelationship.trim();
+                } else {
+                    const relationshipMap = {
+                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
+                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
+                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
+                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
+                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
+                    };
+                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
+                }
+                
+                let prompt;
+                if (analysisLanguage === 'he') {
+                    prompt = `אתה מאמן אישי ופסיכולוג מנוסה שמתמחה בניתוח תקשורת ויחסים. אתה דובר עברית שפת אם ומתבטא בצורה טבעית וחמה. תפקידך לעזור לאנשים להבין את עצמם טוב יותר דרך הדרך שבה הם מתקשרים.
+
+השיחה שלפניך היא בין ${relationshipContext}. שמי ${userName} ואני רוצה שתנתח את התנהגות התקשורתית שלי ותעזור לי להבין איך אני פועל ביחסים.
+
+דברים שאני רוצה שתתמקד בהם:
+- איך אני מתבטא ומתקשר
+- מה הסגנון התקשורתי שלי
+- איך אני מגיב למצבים שונים בשיחה
+- איך התקשורת שלי משפיעה על הקשר הזה
+- מה אני יכול לשפר או לשנות
+- עצות מעשיות לשיפור התקשורת שלי
+
+דבר אליי ישירות בגוף שני, בטון תומך ומעודד כמו מאמן אישי. כתוב בעברית טבעית ושוטפת, לא בתרגום. תן לי תובנות מעמיקות אבל באופן שאני אוכל לקלוט ולהפעיל בחיים.
+
+תמליל השיחה:
+${currentTranscript}`;
+                } else {
+                    prompt = `You are an experienced personal coach and communication psychologist who specializes in helping people understand themselves through their communication patterns. You have a warm, supportive coaching style that makes people feel understood and empowered.
+
+The conversation you're analyzing is between ${relationshipContext}. My name is ${userName} and I want you to analyze my communication behavior and help me understand how I operate in relationships.
+
+Focus on:
+- How I express myself and communicate
+- My communication style and patterns
+- How I respond to different situations in the conversation
+- How my communication affects this relationship dynamic
+- What I could improve or change
+- Practical advice for better communication
+
+Speak to me directly in second person with a supportive, encouraging tone like a personal coach would. Write in natural, flowing language that feels like a real conversation. Give me deep insights but in a way I can understand and apply in my life.
+
+Conversation transcript:
+${currentTranscript}`;
+                }
+                
+                const maxTokens = selectedModel === 'gpt-4' ? 4000 : 2500;
+                
+                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        maxTokens: maxTokens,
+                        language: analysisLanguage,
+                        model: selectedModel
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: 'Analysis failed' }));
+                    throw new Error(errorData.message || 'Analysis failed');
+                }
+                
+                const data = await response.json();
+                
+                document.getElementById('analysisContent').innerHTML = data.response.replace(/\n/g, '<br>');
+                document.getElementById('analysisResult').classList.remove('hidden');
+                
+                showSuccess('✅ Analysis completed successfully!');
+                
+            } catch (error) {
+                console.error('Analysis error:', error);
+                showError('Error analyzing conversation: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function testOpenAIConnection() {
+            try {
+                console.log('🧪 Testing OpenAI connection...');
+                showLoading('Testing OpenAI connection...');
+                
+                const response = await fetch(`${BACKEND_URL}/api/test`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess(`✅ OpenAI connection working! Response: "${data.test_response}"`);
+                } else {
+                    showError(`❌ OpenAI test failed: ${data.message}`);
+                }
+                
+            } catch (error) {
+                console.error('Test error:', error);
+                showError(`❌ Connection test failed: ${error.message}`);
+            } finally {
+                hideLoading();
             }
         }
 
@@ -1338,11 +1053,21 @@ Continue the flowing, conversational style and be responsive to their specific n
                         <div class="speaker-text">${text}</div>
                     `;
                     transcriptBox.appendChild(speakerLine);
+                } else {
+                    // Handle plain text without speaker labels
+                    const textLine = document.createElement('div');
+                    textLine.className = 'speaker-line';
+                    textLine.innerHTML = `
+                        <div class="speaker-text">${line}</div>
+                    `;
+                    transcriptBox.appendChild(textLine);
                 }
             });
             
-            // Update speaker management
-            updateSpeakerManagement(Array.from(uniqueSpeakers));
+            // Update speaker management if speakers found
+            if (uniqueSpeakers.size > 0) {
+                updateSpeakerManagement(Array.from(uniqueSpeakers));
+            }
         }
 
         function updateSpeakerManagement(speakerList) {
@@ -1373,326 +1098,30 @@ Continue the flowing, conversational style and be responsive to their specific n
         function enableActionButtons() {
             document.getElementById('summaryBtn').disabled = false;
             document.getElementById('analyzeBtn').disabled = false;
-            document.getElementById('saveConversationBtn').disabled = false;
         }
 
         function resetTranscript() {
             currentTranscript = '';
-            currentConversationId = null;
             document.getElementById('transcriptBox').innerHTML = '<p style="color: #666; text-align: center;">Your conversation transcript will appear here...</p>';
             document.getElementById('speakerManagement').classList.add('hidden');
             document.getElementById('summaryResult').classList.add('hidden');
             document.getElementById('analysisResult').classList.add('hidden');
-            document.getElementById('contextSection').classList.add('hidden');
             document.getElementById('summaryBtn').disabled = true;
             document.getElementById('analyzeBtn').disabled = true;
-            document.getElementById('saveConversationBtn').disabled = true;
-            updateCurrentConversationIndicator();
         }
 
-        async function generateSummary() {
-            console.log('📋 Generate Summary button clicked');
-            
-            if (!currentTranscript) {
-                showError('No transcript available to summarize.');
-                return;
-            }
-            
-            console.log('📝 Transcript available, proceeding with summary...');
-            
-            try {
-                const analysisLanguage = document.getElementById('analysisLanguage').value;
-                const userName = document.getElementById('userName').value || 'User';
-                const customSummaryPrompt = document.getElementById('summaryPrompt').value;
-                const relationshipType = document.getElementById('relationshipType').value;
-                const customRelationship = document.getElementById('customRelationship').value;
-                const selectedModel = document.getElementById('aiModel').value;
-                
-                // Get speaker information
-                const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
-                const namedTranscript = createNamedTranscript();
-                
-                const loadingMessage = selectedModel === 'gpt-4' ? 
-                    'Generating summary with ChatGPT-4... (this may take 10-30 seconds)' : 
-                    'Generating summary with ChatGPT-3.5... (should be ready in 2-5 seconds)';
-                showLoading(loadingMessage);
-                
-                let summaryPrompt;
-                let relationshipContext = '';
-                
-                // Determine relationship context
-                if (relationshipType === 'other' && customRelationship.trim()) {
-                    relationshipContext = customRelationship.trim();
-                } else {
-                    const relationshipMap = {
-                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
-                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
-                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
-                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
-                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
-                    };
-                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
-                }
-                
-                if (analysisLanguage === 'he') {
-                    // Native Hebrew prompt for summary
-                    summaryPrompt = `אתה מומחה לניתוח שיחות ומאמן אישי. אני רוצה שתכין לי סיכום ברור ושימושי של השיחה שלי. דבר אליי ישירות בגוף שני בעברית טבעית ושוטפת.
-
-השיחה הזאת היא בין ${relationshipContext}. קח את זה בחשבון בסיכום. ${selectedSpeaker ? `שמי ${userName} ואני הוא ${selectedSpeaker} בשיחה.` : `שמי ${userName}.`}
-
-אני רוצה שתארגן את הסיכום לפי:
-- הנושאים העיקריים שדיברנו עליהם
-- נקודות חשובות והחלטות שהתקבלו
-- תובנות או דברים חדשים שעלו בשיחה
-- משימות או צעדים הבאים שהוזכרו
-
-כתוב בטון אישי וחם, פנה אליי כ"אתה" והתייחס לתרומה שלי לשיחה. תן לי סיכום מפורט אבל לא ארוך מדי. השתמש בשמות האמיתיים של האנשים בשיחה.
-
-תמליל השיחה:
-${namedTranscript}`;
-                } else {
-                    // Enhanced English prompt for summary
-                    summaryPrompt = `You are an expert conversation analyst and personal coach. I want you to create a clear and useful summary of my conversation. Speak to me directly in second person with natural, flowing English.
-
-This conversation is between ${relationshipContext}. Keep this relationship context in mind for your summary. ${selectedSpeaker ? `My name is ${userName} and I am ${selectedSpeaker} in this conversation.` : `My name is ${userName}.`}
-
-${customSummaryPrompt}
-
-Use the actual names of people in the conversation when referring to them.
-
-Conversation transcript:
-${namedTranscript}`;
-                }
-                
-                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        prompt: summaryPrompt,
-                        maxTokens: selectedModel === 'gpt-4' ? 3000 : 2000,
-                        language: analysisLanguage,
-                        model: selectedModel
-                    })
-                });
-                
-                if (!response.ok) {
-                    let errorData;
-                    try {
-                        // Clone the response to avoid "body stream already read" error
-                        const responseClone = response.clone();
-                        errorData = await responseClone.json();
-                    } catch {
-                        // If JSON parsing fails, read as text
-                        try {
-                            const errorText = await response.text();
-                            errorData = { message: errorText || 'Analysis failed' };
-                        } catch {
-                            errorData = { message: 'Analysis failed' };
-                        }
-                    }
-                    throw new Error(errorData.message || 'Analysis failed');
-                }
-                
-                const data = await response.json();
-                
-                document.getElementById('analysisContent').innerHTML = data.response.replace(/\n/g, '<br>');
-                document.getElementById('analysisResult').classList.remove('hidden');
-                document.getElementById('contextSection').classList.remove('hidden');
-                
-                // Auto-save if conversation already exists
-                if (currentConversationId) {
-                    saveConversation();
-                }
-                
-            } catch (error) {
-                console.error('Analysis error:', error);
-                if (error.message.includes('fetch')) {
-                    showError('Cannot connect to analysis server. Please make sure the backend server is running.');
-                } else {
-                    showError('Error analyzing conversation: ' + error.message);
-                }
-            } finally {
-                hideLoading();
-            }
-        }
-
-        async function continueAnalysis() {
-            const contextInput = document.getElementById('contextInput').value;
-            if (!contextInput.trim()) {
-                showError('Please add some context or questions to continue.');
-                return;
-            }
-            
-            const userName = document.getElementById('userName').value || 'User';
-            const previousAnalysis = document.getElementById('analysisContent').innerHTML.replace(/<br>/g, '\n');
-            const analysisLanguage = document.getElementById('analysisLanguage').value;
-            const continuePrompt = document.getElementById('continuePrompt').value;
-            const relationshipType = document.getElementById('relationshipType').value;
-            const customRelationship = document.getElementById('customRelationship').value;
-            const selectedModel = document.getElementById('aiModel').value;
-            
-            // Get speaker information
-            const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
-            const namedTranscript = createNamedTranscript();
-            
-            try {
-                const loadingMessage = selectedModel === 'gpt-4' ? 
-                    'Continuing analysis with ChatGPT-4... (this may take 10-30 seconds)' : 
-                    'Continuing analysis with ChatGPT-3.5... (should be ready in 2-5 seconds)';
-                showLoading(loadingMessage);
-                
-                let relationshipContext = '';
-                if (relationshipType === 'other' && customRelationship.trim()) {
-                    relationshipContext = customRelationship.trim();
-                } else {
-                    const relationshipMap = {
-                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
-                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
-                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
-                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
-                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
-                    };
-                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
-                }
-                
-                let fullPrompt;
-                
-                if (analysisLanguage === 'he') {
-                    fullPrompt = `אתה מאמן אישי ופסיכולוג מנוסה שממשיך ניתוח תקשורת. דבר בעברית טבעית וחמה.
-
-הניתוח הקודם שלך:
-${previousAnalysis}
-
-אני (${userName}) ${selectedSpeaker ? `(${selectedSpeaker} בשיחה)` : ''} הוספתי את ההקשר/השאלה הזאת: "${contextInput}"
-
-השיחה המקורית הייתה בין ${relationshipContext}. קח את זה בחשבון.
-
-אנא התייחס לשאלה או ההקשר שלי ותן תובנות נוספות. ${selectedSpeaker ? `המשך להתמקד בניתוח שלי כ${selectedSpeaker}.` : ''} שמור על הטון האישי והתומך ופנה אליי בגוף שני. השתמש בשמות האמיתיים של האנשים בשיחה.
-
-התמליל המקורי:
-${namedTranscript}`;
-                } else {
-                    fullPrompt = `You are an experienced personal coach and psychologist continuing a communication analysis. Speak naturally and warmly.
-
-Previous analysis:
-${previousAnalysis}
-
-I (${userName}) ${selectedSpeaker ? `(${selectedSpeaker} in the conversation)` : ''} have added this context/question: "${contextInput}"
-
-The original conversation was between ${relationshipContext}. Keep this in mind.
-
-${continuePrompt}
-
-${selectedSpeaker ? `Continue focusing on my analysis as ${selectedSpeaker}.` : ''} Use the actual names of people in the conversation when referring to them.
-
-Original transcript:
-${namedTranscript}`;
-                }
-                
-                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        prompt: fullPrompt,
-                        maxTokens: selectedModel === 'gpt-4' ? 2500 : 1500,
-                        language: analysisLanguage,
-                        model: selectedModel
-                    })
-                });
-                
-                if (!response.ok) {
-                    let errorData;
-                    try {
-                        // Clone the response to avoid "body stream already read" error
-                        const responseClone = response.clone();
-                        errorData = await responseClone.json();
-                    } catch {
-                        // If JSON parsing fails, read as text
-                        try {
-                            const errorText = await response.text();
-                            errorData = { message: errorText || 'Continued analysis failed' };
-                        } catch {
-                            errorData = { message: 'Continued analysis failed' };
-                        }
-                    }
-                    throw new Error(errorData.message || 'Continued analysis failed');
-                }
-                
-                const data = await response.json();
-                
-                const currentContent = document.getElementById('analysisContent').innerHTML;
-                const followUpLabel = analysisLanguage === 'he' ? 'המשך:' : 'Follow-up:';
-                document.getElementById('analysisContent').innerHTML = currentContent + '<br><br><strong>' + followUpLabel + '</strong><br>' + data.response.replace(/\n/g, '<br>');
-                document.getElementById('contextInput').value = '';
-                
-                // Auto-save if conversation already exists
-                if (currentConversationId) {
-                    saveConversation();
-                }
-                
-            } catch (error) {
-                console.error('Continue analysis error:', error);
-                if (error.message.includes('fetch')) {
-                    showError('Cannot connect to analysis server. Please make sure the backend server is running.');
-                } else {
-                    showError('Error continuing analysis: ' + error.message);
-                }
-            } finally {
-                hideLoading();
-            }
-        }
-
-        function getSelectedSpeaker() {
-            const selectedRadio = document.querySelector('input[name="isMe"]:checked');
-            if (selectedRadio) {
-                const speakerIndex = parseInt(selectedRadio.value);
-                const speakerInputs = document.querySelectorAll('.speaker-name-input');
-                if (speakerInputs[speakerIndex]) {
-                    return speakerInputs[speakerIndex].value || speakers[speakerIndex];
-                }
-            }
-            return null;
-        }
-
-        function getSpeakerNames() {
-            const speakerInputs = document.querySelectorAll('.speaker-name-input');
-            const namedSpeakers = {};
-            const selectedSpeaker = getSelectedSpeaker();
-            
-            speakerInputs.forEach((input, index) => {
-                const originalSpeaker = speakers[index];
-                const customName = input.value.trim();
-                if (customName && customName !== originalSpeaker) {
-                    namedSpeakers[originalSpeaker] = customName;
-                }
-            });
-            
-            return { namedSpeakers, selectedSpeaker };
-        }
-
-        function createNamedTranscript() {
-            const { namedSpeakers } = getSpeakerNames();
-            let namedTranscript = currentTranscript;
-            
-            // Replace speaker labels with custom names
-            Object.keys(namedSpeakers).forEach(originalSpeaker => {
-                const customName = namedSpeakers[originalSpeaker];
-                const regex = new RegExp(`^${originalSpeaker.replace(/[.*+?^${}()|[\]\\]/g, '\\                            errorData')}:`, 'gm');
-                namedTranscript = namedTranscript.replace(regex, `${customName}:`);
-            });
-            
-            return namedTranscript;
+        function showTranscriptMessage(message) {
+            const transcriptBox = document.getElementById('transcriptBox');
+            transcriptBox.innerHTML = `
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center;">
+                    <p>${message}</p>
+                </div>
+            `;
         }
 
         function showLoading(message) {
-            // Remove existing loading indicators
-            document.querySelectorAll('.loading').forEach(el => el.remove());
+            hideLoading(); // Remove any existing loading indicators
             
-            // Create loading indicator
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'loading';
             loadingDiv.innerHTML = `
@@ -1700,7 +1129,6 @@ ${namedTranscript}`;
                 <span>${message}</span>
             `;
             
-            // Add to main card
             document.querySelector('.main-card').appendChild(loadingDiv);
         }
 
@@ -1709,470 +1137,58 @@ ${namedTranscript}`;
         }
 
         function showError(message) {
-            // Remove existing error messages
             document.querySelectorAll('.error').forEach(el => el.remove());
             
-            // Create error message
             const errorDiv = document.createElement('div');
             errorDiv.className = 'error';
             errorDiv.textContent = message;
             
-            // Add to main card at the top
             const mainCard = document.querySelector('.main-card');
             mainCard.insertBefore(errorDiv, mainCard.firstChild);
             
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                errorDiv.remove();
-            }, 5000);
+            setTimeout(() => errorDiv.remove(), 5000);
         }
 
         function showSuccess(message) {
-            // Remove existing success messages
             document.querySelectorAll('.success').forEach(el => el.remove());
             
-            // Create success message
             const successDiv = document.createElement('div');
             successDiv.className = 'success';
             successDiv.textContent = message;
             
-            // Add to main card at the top
             const mainCard = document.querySelector('.main-card');
             mainCard.insertBefore(successDiv, mainCard.firstChild);
             
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                successDiv.remove();
-            }, 5000);
+            setTimeout(() => successDiv.remove(), 5000);
         }
 
-        // Conversation Management Functions
-        function loadSavedConversations() {
-            try {
-                const saved = JSON.parse(localStorage.getItem('reflectAI_conversations') || '[]');
-                savedConversations = saved;
-                renderSavedConversations();
-            } catch (error) {
-                console.error('Error loading saved conversations:', error);
-                savedConversations = [];
-            }
-        }
-
-        function saveConversationsToStorage() {
-            try {
-                localStorage.setItem('reflectAI_conversations', JSON.stringify(savedConversations));
-            } catch (error) {
-                console.error('Error saving conversations:', error);
-                showError('Failed to save conversations. Storage may be full.');
-            }
-        }
-
-        function generateConversationTitle(transcript) {
-            const lines = transcript.split('\n').filter(line => line.trim());
-            if (lines.length === 0) return 'Empty Conversation';
+        function updateModelTooltip() {
+            const selectedModel = document.getElementById('aiModel').value;
+            const tooltip = document.getElementById('modelTooltip');
+            const gpt35Option = document.getElementById('gpt35Option');
+            const gpt4Option = document.getElementById('gpt4Option');
             
-            // Try to find the first meaningful line
-            let firstLine = lines[0];
-            if (firstLine.includes(':')) {
-                firstLine = firstLine.split(':')[1].trim();
-            }
-            
-            // Truncate and clean up
-            let title = firstLine.substring(0, 50);
-            if (firstLine.length > 50) {
-                title += '...';
-            }
-            
-            return title || 'Untitled Conversation';
-        }
-
-        function saveConversation() {
-            if (!currentTranscript.trim()) {
-                showError('No conversation to save.');
-                return;
-            }
-
-            const conversationTitle = generateConversationTitle(currentTranscript);
-            const now = new Date();
-            
-            const conversation = {
-                id: currentConversationId || Date.now().toString(),
-                title: conversationTitle,
-                transcript: currentTranscript,
-                speakers: speakers,
-                method: currentMethod,
-                userName: document.getElementById('userName').value || 'User',
-                conversationLanguage: document.getElementById('conversationLanguage').value,
-                analysisLanguage: document.getElementById('analysisLanguage').value,
-                relationshipType: document.getElementById('relationshipType').value,
-                customRelationship: document.getElementById('customRelationship').value,
-                aiModel: document.getElementById('aiModel').value,
-                createdAt: now.toISOString(),
-                updatedAt: now.toISOString(),
-                summary: document.getElementById('summaryContent').innerHTML || null,
-                analysis: document.getElementById('analysisContent').innerHTML || null
-            };
-
-            // Check if conversation already exists
-            const existingIndex = savedConversations.findIndex(c => c.id === conversation.id);
-            
-            if (existingIndex >= 0) {
-                // Update existing conversation
-                savedConversations[existingIndex] = conversation;
-                showSuccess('💾 Conversation updated successfully!');
+            // Update tooltip text
+            if (selectedModel === 'gpt-4') {
+                tooltip.innerHTML = '<strong>🔍 ChatGPT-4:</strong> Slower but more intelligent. Perfect for long conversations (2+ hours), complex emotions, and deep psychological insights.';
+                tooltip.style.background = '#f8e6ff';
+                tooltip.style.borderColor = '#d4c5f9';
+                tooltip.style.color = '#5a2d82';
+                
+                // Update visual selection
+                gpt4Option.classList.add('selected');
+                gpt35Option.classList.remove('selected');
             } else {
-                // Add new conversation
-                savedConversations.unshift(conversation);
-                showSuccess('💾 Conversation saved successfully!');
-            }
-
-            currentConversationId = conversation.id;
-            saveConversationsToStorage();
-            renderSavedConversations();
-            updateCurrentConversationIndicator();
-        }
-
-        function loadConversation(conversationId) {
-            const conversation = savedConversations.find(c => c.id === conversationId);
-            if (!conversation) {
-                showError('Conversation not found.');
-                return;
-            }
-
-            // Load conversation data
-            currentTranscript = conversation.transcript;
-            speakers = conversation.speakers || [];
-            currentConversationId = conversation.id;
-            
-            // Update UI settings
-            document.getElementById('userName').value = conversation.userName || '';
-            document.getElementById('conversationLanguage').value = conversation.conversationLanguage || 'en';
-            document.getElementById('analysisLanguage').value = conversation.analysisLanguage || 'en';
-            document.getElementById('relationshipType').value = conversation.relationshipType || 'friends';
-            document.getElementById('customRelationship').value = conversation.customRelationship || '';
-            document.getElementById('aiModel').value = conversation.aiModel || 'gpt-3.5-turbo';
-            updateModelTooltip();
-            
-            // Display transcript
-            displayTranscript(currentTranscript);
-            
-            // Load summary and analysis if available
-            if (conversation.summary) {
-                document.getElementById('summaryContent').innerHTML = conversation.summary;
-                document.getElementById('summaryResult').classList.remove('hidden');
-            }
-            
-            if (conversation.analysis) {
-                document.getElementById('analysisContent').innerHTML = conversation.analysis;
-                document.getElementById('analysisResult').classList.remove('hidden');
-                document.getElementById('contextSection').classList.remove('hidden');
-            }
-            
-            // Update method selection
-            document.querySelectorAll('.method-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.method === conversation.method) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            currentMethod = conversation.method;
-            document.querySelectorAll('.input-section').forEach(section => {
-                section.classList.add('hidden');
-            });
-            document.getElementById(currentMethod + 'Section').classList.remove('hidden');
-            
-            enableActionButtons();
-            updateCurrentConversationIndicator();
-            
-            showSuccess(`📂 Loaded conversation: ${conversation.title}`);
-        }
-
-        function deleteConversation(conversationId) {
-            if (!confirm('Are you sure you want to delete this conversation? This action cannot be undone.')) {
-                return;
-            }
-
-            const conversationIndex = savedConversations.findIndex(c => c.id === conversationId);
-            if (conversationIndex >= 0) {
-                const deletedConversation = savedConversations.splice(conversationIndex, 1)[0];
+                tooltip.innerHTML = '<strong>⚡ ChatGPT-3.5:</strong> Quick response, lower cost. Handles conversations up to 1 hour well. Great for fast insights.';
+                tooltip.style.background = '#e8f4fd';
+                tooltip.style.borderColor = '#bee5eb';
+                tooltip.style.color = '#0c5460';
                 
-                // If we're deleting the current conversation, reset
-                if (currentConversationId === conversationId) {
-                    startNewConversation();
-                }
-                
-                saveConversationsToStorage();
-                renderSavedConversations();
-                showSuccess(`🗑️ Deleted conversation: ${deletedConversation.title}`);
+                // Update visual selection
+                gpt35Option.classList.add('selected');
+                gpt4Option.classList.remove('selected');
             }
         }
-
-        function startNewConversation() {
-            resetTranscript();
-            
-            // Reset form fields
-            document.getElementById('conversationText').value = '';
-            document.getElementById('audioFile').value = '';
-            
-            // Hide audio playback
-            document.getElementById('audioPlayback').classList.add('hidden');
-            
-            // Reset to record method
-            document.querySelectorAll('.method-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.method === 'record') {
-                    btn.classList.add('active');
-                }
-            });
-            
-            currentMethod = 'record';
-            document.querySelectorAll('.input-section').forEach(section => {
-                section.classList.add('hidden');
-            });
-            document.getElementById('recordSection').classList.remove('hidden');
-            
-            showSuccess('🆕 Started new conversation');
-        }
-
-        function renderSavedConversations() {
-            const listContainer = document.getElementById('savedConversationsList');
-            
-            if (savedConversations.length === 0) {
-                listContainer.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No saved conversations yet...</p>';
-                return;
-            }
-            
-            listContainer.innerHTML = '';
-            
-            savedConversations.forEach(conversation => {
-                const conversationItem = document.createElement('div');
-                conversationItem.className = 'conversation-item';
-                if (conversation.id === currentConversationId) {
-                    conversationItem.style.borderColor = '#28a745';
-                    conversationItem.style.borderWidth = '3px';
-                }
-                
-                const methodBadge = {
-                    record: '<span class="conversation-badge recorded">🎙️ Recorded</span>',
-                    upload: '<span class="conversation-badge uploaded">📁 Uploaded</span>',
-                    type: '<span class="conversation-badge typed">✍️ Typed</span>'
-                };
-                
-                const date = new Date(conversation.createdAt).toLocaleString();
-                const preview = conversation.transcript.substring(0, 100) + (conversation.transcript.length > 100 ? '...' : '');
-                
-                conversationItem.innerHTML = `
-                    <div class="conversation-header">
-                        <div class="conversation-title">${conversation.title}</div>
-                        <div class="conversation-date">${date}</div>
-                    </div>
-                    <div style="margin-bottom: 10px;">
-                        ${methodBadge[conversation.method] || ''}
-                        <span style="color: #666; font-size: 14px;">${conversation.userName}</span>
-                    </div>
-                    <div class="conversation-preview">${preview}</div>
-                    <div class="conversation-actions">
-                        <button class="conversation-action-btn load" onclick="loadConversation('${conversation.id}')">
-                            📂 Load
-                        </button>
-                        <button class="conversation-action-btn delete" onclick="deleteConversation('${conversation.id}')">
-                            🗑️ Delete
-                        </button>
-                    </div>
-                `;
-                
-                listContainer.appendChild(conversationItem);
-            });
-        }
-
-        function updateCurrentConversationIndicator() {
-            const indicator = document.querySelector('.current-conversation-indicator');
-            if (!indicator) return;
-            
-            if (currentConversationId) {
-                const conversation = savedConversations.find(c => c.id === currentConversationId);
-                if (conversation) {
-                    indicator.innerHTML = `
-                        <strong>📝 Current Conversation:</strong> ${conversation.title}
-                        <span style="color: #666; margin-left: 10px;">Last updated: ${new Date(conversation.updatedAt).toLocaleString()}</span>
-                    `;
-                    indicator.classList.add('active');
-                } else {
-                    indicator.classList.remove('active');
-                }
-            } else {
-                indicator.classList.remove('active');
-            }
-        }
-
-        async function testOpenAIConnection() {
-            console.log('🧪 Test OpenAI Connection button clicked');
-            
-            try {
-                showLoading('Testing OpenAI connection...');
-                
-                const response = await fetch(`${BACKEND_URL}/api/test`);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    showSuccess(`✅ OpenAI connection working! Test response: "${data.test_response}"`);
-                    console.log('OpenAI test result:', data);
-                } else {
-                    showError(`❌ OpenAI test failed: ${data.message}`);
-                    console.error('OpenAI test error:', data);
-                }
-                
-            } catch (error) {
-                showError(`❌ Connection test failed: ${error.message}`);
-                console.error('Test error:', error);
-            } finally {
-                hideLoading();
-            }
-        }
-
-        // Make functions globally available for onclick handlers
-        window.loadConversation = loadConversation;
-        window.deleteConversation = deleteConversation;
     </script>
 </body>
-</html> = { message: errorText || 'Summary generation failed' };
-                        } catch {
-                            errorData = { message: 'Summary generation failed' };
-                        }
-                    }
-                    throw new Error(errorData.message || 'Summary generation failed');
-                }
-                
-                const data = await response.json();
-                
-                document.getElementById('summaryContent').innerHTML = data.response.replace(/\n/g, '<br>');
-                document.getElementById('summaryResult').classList.remove('hidden');
-                
-                // Auto-save if conversation already exists
-                if (currentConversationId) {
-                    saveConversation();
-                }
-                
-            } catch (error) {
-                console.error('Summary error:', error);
-                if (error.message.includes('fetch')) {
-                    showError('Cannot connect to analysis server. Please make sure the backend server is running.');
-                } else {
-                    showError('Error generating summary: ' + error.message);
-                }
-            } finally {
-                hideLoading();
-            }
-        }
-
-        async function analyzeConversation() {
-            console.log('🔍 Analyze Conversation button clicked');
-            
-            if (!currentTranscript) {
-                showError('No transcript available to analyze.');
-                return;
-            }
-            
-            console.log('📝 Transcript available, proceeding with analysis...');
-            
-            const userName = document.getElementById('userName').value || 'User';
-            const customPrompt = document.getElementById('aiPrompt').value;
-            const analysisLanguage = document.getElementById('analysisLanguage').value;
-            const relationshipType = document.getElementById('relationshipType').value;
-            const customRelationship = document.getElementById('customRelationship').value;
-            const selectedModel = document.getElementById('aiModel').value;
-            
-            // Get speaker information
-            const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
-            const namedTranscript = createNamedTranscript();
-            
-            try {
-                const loadingMessage = selectedModel === 'gpt-4' ? 
-                    'Analyzing with ChatGPT-4... (this may take 10-30 seconds for deeper insights)' : 
-                    'Analyzing with ChatGPT-3.5... (should be ready in 2-5 seconds)';
-                showLoading(loadingMessage);
-                
-                let analysisPrompt;
-                let relationshipContext = '';
-                
-                // Determine relationship context
-                if (relationshipType === 'other' && customRelationship.trim()) {
-                    relationshipContext = customRelationship.trim();
-                } else {
-                    const relationshipMap = {
-                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
-                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
-                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
-                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
-                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
-                    };
-                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
-                }
-                
-                if (analysisLanguage === 'he') {
-                    // Native Hebrew prompt - natural and coach-like
-                    analysisPrompt = `אתה מאמן אישי ופסיכולוג מנוסה שמתמחה בניתוח תקשורת ויחסים. אתה דובר עברית שפת אם ומתבטא בצורה טבעית וחמה. תפקידך לעזור לאנשים להבין את עצמם טוב יותר דרך הדרך שבה הם מתקשרים.
-
-השיחה שלפניך היא בין ${relationshipContext}. שמי ${userName} ואני רוצה שתנתח את התנהגות התקשורתית שלי ותעזור לי להבין איך אני פועל ביחסים.
-
-${selectedSpeaker ? `אני הוא ${selectedSpeaker} בשיחה הזאת. התמקד בניתוח שלי ספציפית - איך אני מתבטא, מגיב ומתקשר.` : 'זהה אותי בשיחה ותתמקד בניתוח התקשורת שלי.'}
-
-דברים שאני רוצה שתתמקד בהם:
-- איך אני מתבטא ומתקשר
-- מה הסגנון התקשורתי שלי
-- איך אני מגיב למצבים שונים בשיחה
-- איך התקשורת שלי משפיעה על הקשר הזה
-- מה אני יכול לשפר או לשנות
-- עצות מעשיות לשיפור התקשורת שלי
-
-דבר אליי ישירות בגוף שני, בטון תומך ומעודד כמו מאמן אישי. כתוב בעברית טבעית ושוטפת, לא בתרגום. תן לי תובנות מעמיקות אבל באופן שאני אוכל לקלוט ולהפעיל בחיים. השתמש בשמות האמיתיים של האנשים בשיחה כשאתה מתייחס אליהם.
-
-תמליל השיחה:
-${namedTranscript}`;
-                } else {
-                    // Enhanced English prompt - more coach-like
-                    analysisPrompt = `You are an experienced personal coach and communication psychologist who specializes in helping people understand themselves through their communication patterns. You have a warm, supportive coaching style that makes people feel understood and empowered.
-
-The conversation you're analyzing is between ${relationshipContext}. My name is ${userName} and I want you to analyze my communication behavior and help me understand how I operate in relationships.
-
-${selectedSpeaker ? `I am ${selectedSpeaker} in this conversation. Focus specifically on analyzing me - how I express myself, respond, and communicate.` : 'Please identify me in the conversation and focus on analyzing my communication.'}
-
-Focus on:
-- How I express myself and communicate
-- My communication style and patterns
-- How I respond to different situations in the conversation
-- How my communication affects this relationship dynamic
-- What I could improve or change
-- Practical advice for better communication
-
-Speak to me directly in second person with a supportive, encouraging tone like a personal coach would. Write in natural, flowing language that feels like a real conversation. Give me deep insights but in a way I can understand and apply in my life. Use the actual names of people in the conversation when referring to them.
-
-Conversation transcript:
-${namedTranscript}`;
-                }
-                
-                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        prompt: analysisPrompt,
-                        maxTokens: selectedModel === 'gpt-4' ? 4000 : 2500,
-                        language: analysisLanguage,
-                        model: selectedModel
-                    })
-                });
-                
-                if (!response.ok) {
-                    let errorData;
-                    try {
-                        // Clone the response to avoid "body stream already read" error
-                        const responseClone = response.clone();
-                        errorData = await responseClone.json();
-                    } catch {
-                        // If JSON parsing fails, read as text
-                        try {
-                            const errorText = await response.text();
-                            errorData
+</html>
