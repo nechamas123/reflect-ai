@@ -583,7 +583,7 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
 
         async function testBackendConnection() {
             try {
-                const response = await fetch(`${BACKEND_URL}/health`);
+                const response = await fetch(`${BACKEND_URL}/api/health`);
                 if (response.ok) {
                     const data = await response.json();
                     console.log('✅ Backend connected successfully:', data);
@@ -743,7 +743,7 @@ Write your analysis in a conversational, flowing paragraph addressing the user d
                 showLoading('Transcribing with Whisper AI...');
                 
                 // Test backend connection
-                const healthCheck = await fetch(`${BACKEND_URL}/health`);
+                const healthCheck = await fetch(`${BACKEND_URL}/api/health`);
                 if (!healthCheck.ok) {
                     throw new Error('Backend server is not responding');
                 }
