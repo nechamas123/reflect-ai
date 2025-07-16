@@ -59,9 +59,27 @@ export default async function handler(req, res) {
     console.log('📥 OpenAI response status:', response.status);
 
     if (!response.ok) {
-      const errorText = await response.text();
+      let errorText = await response.text();
       console.error('❌ OpenAI API error:', errorText);
-      throw new Error(`OpenAI API failed: ${response.status} - ${errorText}`);
+      
+      // Try to parse as JSON first
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        // If not JSON, wrap in error object
+        errorData = { error: { message: errorText } };
+      }
+      
+      // Extract error message
+      let errorMessage = 'OpenAI API request failed';
+      if (errorData.error && errorData.error.message) {
+        errorMessage = errorData.error.message;
+      } else if (typeof errorData === 'string') {
+        errorMessage = errorData;
+      }
+      
+      throw new Error(`OpenAI API failed: ${response.status} - ${errorMessage}`);
     }
 
     const data = await response.json();

@@ -1228,7 +1228,14 @@ Continue the flowing, conversational style and be responsive to their specific n
                 });
                 
                 if (!response.ok) {
-                    const errorData = await response.json();
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch {
+                        // If response is not JSON, create error object
+                        const errorText = await response.text();
+                        errorData = { message: errorText || 'Analysis failed' };
+                    }
                     throw new Error(errorData.message || 'Summary generation failed');
                 }
                 
@@ -1292,7 +1299,14 @@ Continue the flowing, conversational style and be responsive to their specific n
                 });
                 
                 if (!response.ok) {
-                    const errorData = await response.json();
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch {
+                        // If response is not JSON, create error object
+                        const errorText = await response.text();
+                        errorData = { message: errorText || 'Analysis failed' };
+                    }
                     throw new Error(errorData.message || 'Analysis failed');
                 }
                 
@@ -1362,7 +1376,14 @@ Continue the flowing, conversational style and be responsive to their specific n
                 });
                 
                 if (!response.ok) {
-                    const errorData = await response.json();
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch {
+                        // If response is not JSON, create error object
+                        const errorText = await response.text();
+                        errorData = { message: errorText || 'Continued analysis failed' };
+                    }
                     throw new Error(errorData.message || 'Continued analysis failed');
                 }
                 
