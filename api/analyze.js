@@ -49,7 +49,7 @@ export default async function handler(req, res) {
     console.log('🚀 Sending request to OpenAI...');
     
     const openaiPayload = {
-      model: 'gpt-4',
+      model: 'gpt-3.5-turbo', // Changed from gpt-4 to gpt-3.5-turbo for faster response
       messages: [
         {
           role: 'system',
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
           content: prompt
         }
       ],
-      max_tokens: Math.min(maxTokens, 3000),
+      max_tokens: Math.min(maxTokens, 2000), // Reduced from 3000 to 2000
       temperature: 0.7
     };
 
@@ -137,7 +137,7 @@ export default async function handler(req, res) {
       res.status(200).json({
         response: content,
         usage: data.usage,
-        model: 'gpt-4'
+        model: 'gpt-3.5-turbo'
       });
     } else {
       console.error('❌ Invalid OpenAI response structure:', JSON.stringify(data, null, 2));

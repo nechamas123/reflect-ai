@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-3.5-turbo',
         messages: [
           {
             role: 'user',
@@ -78,7 +78,7 @@ export default async function handler(req, res) {
       message: 'OpenAI API connection working',
       test_response: data.choices[0].message.content,
       usage: data.usage,
-      model: 'gpt-4'
+      model: 'gpt-3.5-turbo'
     });
 
   } catch (error) {
