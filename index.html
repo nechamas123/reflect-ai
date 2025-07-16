@@ -1231,6 +1231,10 @@ Continue the flowing, conversational style and be responsive to their specific n
                 const relationshipType = document.getElementById('relationshipType').value;
                 const customRelationship = document.getElementById('customRelationship').value;
                 
+                // Get speaker information
+                const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
+                const namedTranscript = createNamedTranscript();
+                
                 let summaryPrompt;
                 let relationshipContext = '';
                 
@@ -1252,7 +1256,7 @@ Continue the flowing, conversational style and be responsive to their specific n
                     // Native Hebrew prompt for summary
                     summaryPrompt = `אתה מומחה לניתוח שיחות ומאמן אישי. אני רוצה שתכין לי סיכום ברור ושימושי של השיחה שלי. דבר אליי ישירות בגוף שני בעברית טבעית ושוטפת.
 
-השיחה הזאת היא בין ${relationshipContext}. קח את זה בחשבון בסיכום.
+השיחה הזאת היא בין ${relationshipContext}. קח את זה בחשבון בסיכום. ${selectedSpeaker ? `שמי ${userName} ואני הוא ${selectedSpeaker} בשיחה.` : `שמי ${userName}.`}
 
 אני רוצה שתארגן את הסיכום לפי:
 - הנושאים העיקריים שדיברנו עליהם
@@ -1260,24 +1264,22 @@ Continue the flowing, conversational style and be responsive to their specific n
 - תובנות או דברים חדשים שעלו בשיחה
 - משימות או צעדים הבאים שהוזכרו
 
-כתוב בטון אישי וחם, פנה אליי כ"אתה" והתייחס לתרומה שלי לשיחה. תן לי סיכום מפורט אבל לא ארוך מדי.
-
-שמי: ${userName}
+כתוב בטון אישי וחם, פנה אליי כ"אתה" והתייחס לתרומה שלי לשיחה. תן לי סיכום מפורט אבל לא ארוך מדי. השתמש בשמות האמיתיים של האנשים בשיחה.
 
 תמליל השיחה:
-${currentTranscript}`;
+${namedTranscript}`;
                 } else {
                     // Enhanced English prompt for summary
                     summaryPrompt = `You are an expert conversation analyst and personal coach. I want you to create a clear and useful summary of my conversation. Speak to me directly in second person with natural, flowing English.
 
-This conversation is between ${relationshipContext}. Keep this relationship context in mind for your summary.
+This conversation is between ${relationshipContext}. Keep this relationship context in mind for your summary. ${selectedSpeaker ? `My name is ${userName} and I am ${selectedSpeaker} in this conversation.` : `My name is ${userName}.`}
 
 ${customSummaryPrompt}
 
-User name: ${userName}
+Use the actual names of people in the conversation when referring to them.
 
 Conversation transcript:
-${currentTranscript}`;
+${namedTranscript}`;
                 }
                 
                 const response = await fetch(`${BACKEND_URL}/api/analyze`, {
@@ -1339,11 +1341,14 @@ ${currentTranscript}`;
             }
             
             const userName = document.getElementById('userName').value || 'User';
-            const selectedSpeaker = getSelectedSpeaker();
             const customPrompt = document.getElementById('aiPrompt').value;
             const analysisLanguage = document.getElementById('analysisLanguage').value;
             const relationshipType = document.getElementById('relationshipType').value;
             const customRelationship = document.getElementById('customRelationship').value;
+            
+            // Get speaker information
+            const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
+            const namedTranscript = createNamedTranscript();
             
             try {
                 showLoading('Analyzing your conversation...');
@@ -1369,7 +1374,9 @@ ${currentTranscript}`;
                     // Native Hebrew prompt - natural and coach-like
                     analysisPrompt = `אתה מאמן אישי ופסיכולוג מנוסה שמתמחה בניתוח תקשורת ויחסים. אתה דובר עברית שפת אם ומתבטא בצורה טבעית וחמה. תפקידך לעזור לאנשים להבין את עצמם טוב יותר דרך הדרך שבה הם מתקשרים.
 
-השיחה שלפניך היא בין ${relationshipContext}. אני רוצה שתנתח את התנהגות התקשורתית שלי ותעזור לי להבין איך אני פועל ביחסים.
+השיחה שלפניך היא בין ${relationshipContext}. שמי ${userName} ואני רוצה שתנתח את התנהגות התקשורתית שלי ותעזור לי להבין איך אני פועל ביחסים.
+
+${selectedSpeaker ? `אני הוא ${selectedSpeaker} בשיחה הזאת. התמקד בניתוח שלי ספציפית - איך אני מתבטא, מגיב ומתקשר.` : 'זהה אותי בשיחה ותתמקד בניתוח התקשורת שלי.'}
 
 דברים שאני רוצה שתתמקד בהם:
 - איך אני מתבטא ומתקשר
@@ -1379,18 +1386,17 @@ ${currentTranscript}`;
 - מה אני יכול לשפר או לשנות
 - עצות מעשיות לשיפור התקשורת שלי
 
-דבר אליי ישירות בגוף שני, בטון תומך ומעודד כמו מאמן אישי. כתוב בעברית טבעית ושוטפת, לא בתרגום. תן לי תובנות מעמיקות אבל באופן שאני אוכל לקלוט ולהפעיל בחיים.
-
-שמי: ${userName}
-${selectedSpeaker ? `התמקד בניתוח של "${selectedSpeaker}" בשיחה הזאת.` : ''}
+דבר אליי ישירות בגוף שני, בטון תומך ומעודד כמו מאמן אישי. כתוב בעברית טבעית ושוטפת, לא בתרגום. תן לי תובנות מעמיקות אבל באופן שאני אוכל לקלוט ולהפעיל בחיים. השתמש בשמות האמיתיים של האנשים בשיחה כשאתה מתייחס אליהם.
 
 תמליל השיחה:
-${currentTranscript}`;
+${namedTranscript}`;
                 } else {
                     // Enhanced English prompt - more coach-like
                     analysisPrompt = `You are an experienced personal coach and communication psychologist who specializes in helping people understand themselves through their communication patterns. You have a warm, supportive coaching style that makes people feel understood and empowered.
 
-The conversation you're analyzing is between ${relationshipContext}. I want you to analyze my communication behavior and help me understand how I operate in relationships.
+The conversation you're analyzing is between ${relationshipContext}. My name is ${userName} and I want you to analyze my communication behavior and help me understand how I operate in relationships.
+
+${selectedSpeaker ? `I am ${selectedSpeaker} in this conversation. Focus specifically on analyzing me - how I express myself, respond, and communicate.` : 'Please identify me in the conversation and focus on analyzing my communication.'}
 
 Focus on:
 - How I express myself and communicate
@@ -1400,13 +1406,10 @@ Focus on:
 - What I could improve or change
 - Practical advice for better communication
 
-Speak to me directly in second person with a supportive, encouraging tone like a personal coach would. Write in natural, flowing language that feels like a real conversation. Give me deep insights but in a way I can understand and apply in my life.
-
-User name: ${userName}
-${selectedSpeaker ? `Focus specifically on analyzing "${selectedSpeaker}" in this conversation.` : ''}
+Speak to me directly in second person with a supportive, encouraging tone like a personal coach would. Write in natural, flowing language that feels like a real conversation. Give me deep insights but in a way I can understand and apply in my life. Use the actual names of people in the conversation when referring to them.
 
 Conversation transcript:
-${currentTranscript}`;
+${namedTranscript}`;
                 }
                 
                 const response = await fetch(`${BACKEND_URL}/api/analyze`, {
@@ -1470,12 +1473,15 @@ ${currentTranscript}`;
             }
             
             const userName = document.getElementById('userName').value || 'User';
-            const selectedSpeaker = getSelectedSpeaker();
             const previousAnalysis = document.getElementById('analysisContent').innerHTML.replace(/<br>/g, '\n');
             const analysisLanguage = document.getElementById('analysisLanguage').value;
             const continuePrompt = document.getElementById('continuePrompt').value;
             const relationshipType = document.getElementById('relationshipType').value;
             const customRelationship = document.getElementById('customRelationship').value;
+            
+            // Get speaker information
+            const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
+            const namedTranscript = createNamedTranscript();
             
             try {
                 showLoading('Continuing analysis...');
@@ -1502,30 +1508,30 @@ ${currentTranscript}`;
 הניתוח הקודם שלך:
 ${previousAnalysis}
 
-המשתמש (${userName}) הוסיף את ההקשר/השאלה הזאת: "${contextInput}"
+אני (${userName}) ${selectedSpeaker ? `(${selectedSpeaker} בשיחה)` : ''} הוספתי את ההקשר/השאלה הזאת: "${contextInput}"
 
 השיחה המקורית הייתה בין ${relationshipContext}. קח את זה בחשבון.
 
-אנא התייחס לשאלה או ההקשר שלהם ותן תובנות נוספות. ${selectedSpeaker ? `המשך להתמקד ב"${selectedSpeaker}" בשיחה.` : ''} שמור על הטון האישי והתומך ופנה אליהם בגוף שני.
+אנא התייחס לשאלה או ההקשר שלי ותן תובנות נוספות. ${selectedSpeaker ? `המשך להתמקד בניתוח שלי כ${selectedSpeaker}.` : ''} שמור על הטון האישי והתומך ופנה אליי בגוף שני. השתמש בשמות האמיתיים של האנשים בשיחה.
 
 התמליל המקורי:
-${currentTranscript}`;
+${namedTranscript}`;
                 } else {
                     fullPrompt = `You are an experienced personal coach and psychologist continuing a communication analysis. Speak naturally and warmly.
 
 Previous analysis:
 ${previousAnalysis}
 
-The user (${userName}) has added this context/question: "${contextInput}"
+I (${userName}) ${selectedSpeaker ? `(${selectedSpeaker} in the conversation)` : ''} have added this context/question: "${contextInput}"
 
 The original conversation was between ${relationshipContext}. Keep this in mind.
 
 ${continuePrompt}
 
-${selectedSpeaker ? `Continue focusing on "${selectedSpeaker}" in the conversation.` : ''}
+${selectedSpeaker ? `Continue focusing on my analysis as ${selectedSpeaker}.` : ''} Use the actual names of people in the conversation when referring to them.
 
 Original transcript:
-${currentTranscript}`;
+${namedTranscript}`;
                 }
                 
                 const response = await fetch(`${BACKEND_URL}/api/analyze`, {
@@ -1592,6 +1598,46 @@ ${currentTranscript}`;
                 }
             }
             return null;
+        }
+
+        function getSpeakerNames() {
+            const speakerInputs = document.querySelectorAll('.speaker-name-input');
+            const namedSpeakers = {};
+            const selectedSpeaker = getSelectedSpeaker();
+            
+            speakerInputs.forEach((input, index) => {
+                const originalSpeaker = speakers[index];
+                const customName = input.value.trim();
+                if (customName && customName !== originalSpeaker) {
+                    namedSpeakers[originalSpeaker] = customName;
+                }
+            });
+            
+            return { namedSpeakers, selectedSpeaker };
+        }
+
+        function createNamedTranscript() {
+            const { namedSpeakers } = getSpeakerNames();
+            let namedTranscript = currentTranscript;
+            
+            // Replace speaker labels with custom names
+            Object.keys(namedSpeakers).forEach(originalSpeaker => {
+                const customName = namedSpeakers[originalSpeaker];
+                const regex = new RegExp(`^${originalSpeaker.replace(/[.*+?^${}()|[\]\\]/g, '\\        function getSelectedSpeaker() {
+            const selectedRadio = document.querySelector('input[name="isMe"]:checked');
+            if (selectedRadio) {
+                const speakerIndex = parseInt(selectedRadio.value);
+                const speakerInputs = document.querySelectorAll('.speaker-name-input');
+                if (speakerInputs[speakerIndex]) {
+                    return speakerInputs[speakerIndex].value || speakers[speakerIndex];
+                }
+            }
+            return null;
+        }')}:`, 'gm');
+                namedTranscript = namedTranscript.replace(regex, `${customName}:`);
+            });
+            
+            return namedTranscript;
         }
 
         function showLoading(message) {
