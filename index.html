@@ -366,7 +366,7 @@
 
         .conversation-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
@@ -576,6 +576,11 @@
             align-items: center;
             gap: 10px;
             color: #666;
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
         .spinner {
@@ -885,7 +890,6 @@ Continue the flowing, conversational style and be responsive to their specific n
         let speakers = [];
         let currentMethod = 'record';
         let isRecording = false;
-        let liveTranscriptionInterval;
         let recognitionService;
         let currentConversationId = null;
         let savedConversations = [];
@@ -1181,8 +1185,6 @@ Continue the flowing, conversational style and be responsive to their specific n
             }
         }
 
-        // Remove the old showLiveTranscription function as it's now integrated into startRecording
-
         async function handleFileUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -1399,17 +1401,21 @@ Continue the flowing, conversational style and be responsive to their specific n
             console.log('📝 Transcript available, proceeding with summary...');
             
             try {
-                showLoading('Generating summary...');
-                
                 const analysisLanguage = document.getElementById('analysisLanguage').value;
                 const userName = document.getElementById('userName').value || 'User';
                 const customSummaryPrompt = document.getElementById('summaryPrompt').value;
                 const relationshipType = document.getElementById('relationshipType').value;
                 const customRelationship = document.getElementById('customRelationship').value;
+                const selectedModel = document.getElementById('aiModel').value;
                 
                 // Get speaker information
                 const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
                 const namedTranscript = createNamedTranscript();
+                
+                const loadingMessage = selectedModel === 'gpt-4' ? 
+                    'Generating summary with ChatGPT-4... (this may take 10-30 seconds)' : 
+                    'Generating summary with ChatGPT-3.5... (should be ready in 2-5 seconds)';
+                showLoading(loadingMessage);
                 
                 let summaryPrompt;
                 let relationshipContext = '';
@@ -1465,142 +1471,7 @@ ${namedTranscript}`;
                     },
                     body: JSON.stringify({
                         prompt: summaryPrompt,
-                        maxTokens: selectedModel === 'gpt-4' ? 3000 : 2000, // Higher limits for summaries
-                        language: analysisLanguage,
-                        model: selectedModel
-                    })
-                });
-                
-                if (!response.ok) {
-                    let errorData;
-                    try {
-                        // Clone the response to avoid "body stream already read" error
-                        const responseClone = response.clone();
-                        errorData = await responseClone.json();
-                    } catch {
-                        // If JSON parsing fails, read as text
-                        try {
-                            const errorText = await response.text();
-                            errorData = { message: errorText || 'Summary generation failed' };
-                        } catch {
-                            errorData = { message: 'Summary generation failed' };
-                        }
-                    }
-                    throw new Error(errorData.message || 'Summary generation failed');
-                }
-                
-                const data = await response.json();
-                
-                document.getElementById('summaryContent').innerHTML = data.response.replace(/\n/g, '<br>');
-                document.getElementById('summaryResult').classList.remove('hidden');
-                
-                // Auto-save if conversation already exists
-                if (currentConversationId) {
-                    saveConversation();
-                }
-                
-            } catch (error) {
-                console.error('Summary error:', error);
-                if (error.message.includes('fetch')) {
-                    showError('Cannot connect to analysis server. Please make sure the backend server is running.');
-                } else {
-                    showError('Error generating summary: ' + error.message);
-                }
-            } finally {
-                hideLoading();
-            }
-        }
-
-        async function analyzeConversation() {
-            console.log('🔍 Analyze Conversation button clicked');
-            
-            if (!currentTranscript) {
-                showError('No transcript available to analyze.');
-                return;
-            }
-            
-            console.log('📝 Transcript available, proceeding with analysis...');
-            
-            const userName = document.getElementById('userName').value || 'User';
-            const customPrompt = document.getElementById('aiPrompt').value;
-            const analysisLanguage = document.getElementById('analysisLanguage').value;
-            const relationshipType = document.getElementById('relationshipType').value;
-            const customRelationship = document.getElementById('customRelationship').value;
-            
-            // Get speaker information
-            const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
-            const namedTranscript = createNamedTranscript();
-            
-            try {
-                showLoading('Analyzing your conversation...');
-                
-                let analysisPrompt;
-                let relationshipContext = '';
-                
-                // Determine relationship context
-                if (relationshipType === 'other' && customRelationship.trim()) {
-                    relationshipContext = customRelationship.trim();
-                } else {
-                    const relationshipMap = {
-                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
-                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
-                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
-                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
-                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
-                    };
-                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
-                }
-                
-                if (analysisLanguage === 'he') {
-                    // Native Hebrew prompt - natural and coach-like
-                    analysisPrompt = `אתה מאמן אישי ופסיכולוג מנוסה שמתמחה בניתוח תקשורת ויחסים. אתה דובר עברית שפת אם ומתבטא בצורה טבעית וחמה. תפקידך לעזור לאנשים להבין את עצמם טוב יותר דרך הדרך שבה הם מתקשרים.
-
-השיחה שלפניך היא בין ${relationshipContext}. שמי ${userName} ואני רוצה שתנתח את התנהגות התקשורתית שלי ותעזור לי להבין איך אני פועל ביחסים.
-
-${selectedSpeaker ? `אני הוא ${selectedSpeaker} בשיחה הזאת. התמקד בניתוח שלי ספציפית - איך אני מתבטא, מגיב ומתקשר.` : 'זהה אותי בשיחה ותתמקד בניתוח התקשורת שלי.'}
-
-דברים שאני רוצה שתתמקד בהם:
-- איך אני מתבטא ומתקשר
-- מה הסגנון התקשורתי שלי
-- איך אני מגיב למצבים שונים בשיחה
-- איך התקשורת שלי משפיעה על הקשר הזה
-- מה אני יכול לשפר או לשנות
-- עצות מעשיות לשיפור התקשורת שלי
-
-דבר אליי ישירות בגוף שני, בטון תומך ומעודד כמו מאמן אישי. כתוב בעברית טבעית ושוטפת, לא בתרגום. תן לי תובנות מעמיקות אבל באופן שאני אוכל לקלוט ולהפעיל בחיים. השתמש בשמות האמיתיים של האנשים בשיחה כשאתה מתייחס אליהם.
-
-תמליל השיחה:
-${namedTranscript}`;
-                } else {
-                    // Enhanced English prompt - more coach-like
-                    analysisPrompt = `You are an experienced personal coach and communication psychologist who specializes in helping people understand themselves through their communication patterns. You have a warm, supportive coaching style that makes people feel understood and empowered.
-
-The conversation you're analyzing is between ${relationshipContext}. My name is ${userName} and I want you to analyze my communication behavior and help me understand how I operate in relationships.
-
-${selectedSpeaker ? `I am ${selectedSpeaker} in this conversation. Focus specifically on analyzing me - how I express myself, respond, and communicate.` : 'Please identify me in the conversation and focus on analyzing my communication.'}
-
-Focus on:
-- How I express myself and communicate
-- My communication style and patterns
-- How I respond to different situations in the conversation
-- How my communication affects this relationship dynamic
-- What I could improve or change
-- Practical advice for better communication
-
-Speak to me directly in second person with a supportive, encouraging tone like a personal coach would. Write in natural, flowing language that feels like a real conversation. Give me deep insights but in a way I can understand and apply in my life. Use the actual names of people in the conversation when referring to them.
-
-Conversation transcript:
-${namedTranscript}`;
-                }
-                
-                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        prompt: analysisPrompt,
-                        maxTokens: selectedModel === 'gpt-4' ? 4000 : 2500, // Higher limits for analysis
+                        maxTokens: selectedModel === 'gpt-4' ? 3000 : 2000,
                         language: analysisLanguage,
                         model: selectedModel
                     })
@@ -1727,7 +1598,7 @@ ${namedTranscript}`;
                     },
                     body: JSON.stringify({
                         prompt: fullPrompt,
-                        maxTokens: selectedModel === 'gpt-4' ? 2500 : 1500, // Higher limits for follow-ups
+                        maxTokens: selectedModel === 'gpt-4' ? 2500 : 1500,
                         language: analysisLanguage,
                         model: selectedModel
                     })
@@ -1810,17 +1681,7 @@ ${namedTranscript}`;
             // Replace speaker labels with custom names
             Object.keys(namedSpeakers).forEach(originalSpeaker => {
                 const customName = namedSpeakers[originalSpeaker];
-                const regex = new RegExp(`^${originalSpeaker.replace(/[.*+?^${}()|[\]\\]/g, '\\        function getSelectedSpeaker() {
-            const selectedRadio = document.querySelector('input[name="isMe"]:checked');
-            if (selectedRadio) {
-                const speakerIndex = parseInt(selectedRadio.value);
-                const speakerInputs = document.querySelectorAll('.speaker-name-input');
-                if (speakerInputs[speakerIndex]) {
-                    return speakerInputs[speakerIndex].value || speakers[speakerIndex];
-                }
-            }
-            return null;
-        }')}:`, 'gm');
+                const regex = new RegExp(`^${originalSpeaker.replace(/[.*+?^${}()|[\]\\]/g, '\\                            errorData')}:`, 'gm');
                 namedTranscript = namedTranscript.replace(regex, `${customName}:`);
             });
             
@@ -1863,6 +1724,25 @@ ${namedTranscript}`;
             // Auto-remove after 5 seconds
             setTimeout(() => {
                 errorDiv.remove();
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            // Remove existing success messages
+            document.querySelectorAll('.success').forEach(el => el.remove());
+            
+            // Create success message
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.textContent = message;
+            
+            // Add to main card at the top
+            const mainCard = document.querySelector('.main-card');
+            mainCard.insertBefore(successDiv, mainCard.firstChild);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                successDiv.remove();
             }, 5000);
         }
 
@@ -2151,24 +2031,148 @@ ${namedTranscript}`;
             }
         }
 
-        function showSuccess(message) {
-            // Remove existing success messages
-            document.querySelectorAll('.success').forEach(el => el.remove());
-            
-            // Create success message
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success';
-            successDiv.textContent = message;
-            
-            // Add to main card at the top
-            const mainCard = document.querySelector('.main-card');
-            mainCard.insertBefore(successDiv, mainCard.firstChild);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                successDiv.remove();
-            }, 5000);
-        }
+        // Make functions globally available for onclick handlers
+        window.loadConversation = loadConversation;
+        window.deleteConversation = deleteConversation;
     </script>
 </body>
-</html>
+</html> = { message: errorText || 'Summary generation failed' };
+                        } catch {
+                            errorData = { message: 'Summary generation failed' };
+                        }
+                    }
+                    throw new Error(errorData.message || 'Summary generation failed');
+                }
+                
+                const data = await response.json();
+                
+                document.getElementById('summaryContent').innerHTML = data.response.replace(/\n/g, '<br>');
+                document.getElementById('summaryResult').classList.remove('hidden');
+                
+                // Auto-save if conversation already exists
+                if (currentConversationId) {
+                    saveConversation();
+                }
+                
+            } catch (error) {
+                console.error('Summary error:', error);
+                if (error.message.includes('fetch')) {
+                    showError('Cannot connect to analysis server. Please make sure the backend server is running.');
+                } else {
+                    showError('Error generating summary: ' + error.message);
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function analyzeConversation() {
+            console.log('🔍 Analyze Conversation button clicked');
+            
+            if (!currentTranscript) {
+                showError('No transcript available to analyze.');
+                return;
+            }
+            
+            console.log('📝 Transcript available, proceeding with analysis...');
+            
+            const userName = document.getElementById('userName').value || 'User';
+            const customPrompt = document.getElementById('aiPrompt').value;
+            const analysisLanguage = document.getElementById('analysisLanguage').value;
+            const relationshipType = document.getElementById('relationshipType').value;
+            const customRelationship = document.getElementById('customRelationship').value;
+            const selectedModel = document.getElementById('aiModel').value;
+            
+            // Get speaker information
+            const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
+            const namedTranscript = createNamedTranscript();
+            
+            try {
+                const loadingMessage = selectedModel === 'gpt-4' ? 
+                    'Analyzing with ChatGPT-4... (this may take 10-30 seconds for deeper insights)' : 
+                    'Analyzing with ChatGPT-3.5... (should be ready in 2-5 seconds)';
+                showLoading(loadingMessage);
+                
+                let analysisPrompt;
+                let relationshipContext = '';
+                
+                // Determine relationship context
+                if (relationshipType === 'other' && customRelationship.trim()) {
+                    relationshipContext = customRelationship.trim();
+                } else {
+                    const relationshipMap = {
+                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
+                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
+                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
+                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
+                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
+                    };
+                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
+                }
+                
+                if (analysisLanguage === 'he') {
+                    // Native Hebrew prompt - natural and coach-like
+                    analysisPrompt = `אתה מאמן אישי ופסיכולוג מנוסה שמתמחה בניתוח תקשורת ויחסים. אתה דובר עברית שפת אם ומתבטא בצורה טבעית וחמה. תפקידך לעזור לאנשים להבין את עצמם טוב יותר דרך הדרך שבה הם מתקשרים.
+
+השיחה שלפניך היא בין ${relationshipContext}. שמי ${userName} ואני רוצה שתנתח את התנהגות התקשורתית שלי ותעזור לי להבין איך אני פועל ביחסים.
+
+${selectedSpeaker ? `אני הוא ${selectedSpeaker} בשיחה הזאת. התמקד בניתוח שלי ספציפית - איך אני מתבטא, מגיב ומתקשר.` : 'זהה אותי בשיחה ותתמקד בניתוח התקשורת שלי.'}
+
+דברים שאני רוצה שתתמקד בהם:
+- איך אני מתבטא ומתקשר
+- מה הסגנון התקשורתי שלי
+- איך אני מגיב למצבים שונים בשיחה
+- איך התקשורת שלי משפיעה על הקשר הזה
+- מה אני יכול לשפר או לשנות
+- עצות מעשיות לשיפור התקשורת שלי
+
+דבר אליי ישירות בגוף שני, בטון תומך ומעודד כמו מאמן אישי. כתוב בעברית טבעית ושוטפת, לא בתרגום. תן לי תובנות מעמיקות אבל באופן שאני אוכל לקלוט ולהפעיל בחיים. השתמש בשמות האמיתיים של האנשים בשיחה כשאתה מתייחס אליהם.
+
+תמליל השיחה:
+${namedTranscript}`;
+                } else {
+                    // Enhanced English prompt - more coach-like
+                    analysisPrompt = `You are an experienced personal coach and communication psychologist who specializes in helping people understand themselves through their communication patterns. You have a warm, supportive coaching style that makes people feel understood and empowered.
+
+The conversation you're analyzing is between ${relationshipContext}. My name is ${userName} and I want you to analyze my communication behavior and help me understand how I operate in relationships.
+
+${selectedSpeaker ? `I am ${selectedSpeaker} in this conversation. Focus specifically on analyzing me - how I express myself, respond, and communicate.` : 'Please identify me in the conversation and focus on analyzing my communication.'}
+
+Focus on:
+- How I express myself and communicate
+- My communication style and patterns
+- How I respond to different situations in the conversation
+- How my communication affects this relationship dynamic
+- What I could improve or change
+- Practical advice for better communication
+
+Speak to me directly in second person with a supportive, encouraging tone like a personal coach would. Write in natural, flowing language that feels like a real conversation. Give me deep insights but in a way I can understand and apply in my life. Use the actual names of people in the conversation when referring to them.
+
+Conversation transcript:
+${namedTranscript}`;
+                }
+                
+                const response = await fetch(`${BACKEND_URL}/api/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: analysisPrompt,
+                        maxTokens: selectedModel === 'gpt-4' ? 4000 : 2500,
+                        language: analysisLanguage,
+                        model: selectedModel
+                    })
+                });
+                
+                if (!response.ok) {
+                    let errorData;
+                    try {
+                        // Clone the response to avoid "body stream already read" error
+                        const responseClone = response.clone();
+                        errorData = await responseClone.json();
+                    } catch {
+                        // If JSON parsing fails, read as text
+                        try {
+                            const errorText = await response.text();
+                            errorData
