@@ -458,6 +458,68 @@
             display: block;
         }
 
+        .model-tooltip {
+            margin-top: 8px;
+            padding: 10px;
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0c5460;
+            line-height: 1.4;
+        }
+
+        .model-tooltip strong {
+            color: #084298;
+        }
+
+        .ai-model-info {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #856404;
+        }
+
+        .ai-model-info .model-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .model-option {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .model-option.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .model-option h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+        }
+
+        .model-option p {
+            margin: 0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .ai-model-info .model-comparison {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
         .results-section {
             margin-top: 30px;
         }
@@ -628,6 +690,16 @@
                         <label for="customRelationship">Custom Relationship (if "Other" selected):</label>
                         <input type="text" id="customRelationship" placeholder="e.g., therapist-client, teacher-student...">
                     </div>
+                    <div class="setting-group">
+                        <label for="aiModel">AI Model:</label>
+                        <select id="aiModel">
+                            <option value="gpt-3.5-turbo">⚡ ChatGPT-3.5 (Fast & Free)</option>
+                            <option value="gpt-4">🔍 ChatGPT-4 (Deep & Accurate)</option>
+                        </select>
+                        <div class="model-tooltip" id="modelTooltip">
+                            <strong>⚡ ChatGPT-3.5:</strong> Quick response, lower cost. Great for short or casual analysis.
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -699,6 +771,21 @@
                 <button class="action-btn" id="testConnectionBtn" style="background: #fd7e14; color: white;">
                     🧪 Test OpenAI Connection
                 </button>
+            </div>
+
+            <!-- AI Model Information -->
+            <div class="ai-model-info">
+                <strong>🤖 AI Model Selection:</strong> Choose the right model for your needs
+                <div class="model-comparison">
+                    <div class="model-option" id="gpt35Option">
+                        <h4>⚡ ChatGPT-3.5</h4>
+                        <p><strong>Fast & Efficient:</strong> Quick response (2-5 sec), lower cost. Handles conversations up to 1 hour well. Great for quick insights.</p>
+                    </div>
+                    <div class="model-option" id="gpt4Option">
+                        <h4>🔍 ChatGPT-4</h4>
+                        <p><strong>Deep & Comprehensive:</strong> Slower response (10-60 sec), higher cost. Excellent for 2+ hour conversations, complex emotions, and nuanced analysis.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Conversation Management -->
@@ -812,6 +899,7 @@ Continue the flowing, conversational style and be responsive to their specific n
             setupMethodSwitching();
             testBackendConnection();
             loadSavedConversations();
+            updateModelTooltip();
         });
 
         async function testBackendConnection() {
@@ -845,6 +933,7 @@ Continue the flowing, conversational style and be responsive to their specific n
             document.getElementById('saveConversationBtn').addEventListener('click', saveConversation);
             document.getElementById('newConversationBtn').addEventListener('click', startNewConversation);
             document.getElementById('testConnectionBtn').addEventListener('click', testOpenAIConnection);
+            document.getElementById('aiModel').addEventListener('change', updateModelTooltip);
         }
 
         function setupMethodSwitching() {
@@ -1142,6 +1231,34 @@ Continue the flowing, conversational style and be responsive to their specific n
             }
         }
 
+        function updateModelTooltip() {
+            const selectedModel = document.getElementById('aiModel').value;
+            const tooltip = document.getElementById('modelTooltip');
+            const gpt35Option = document.getElementById('gpt35Option');
+            const gpt4Option = document.getElementById('gpt4Option');
+            
+            // Update tooltip text
+            if (selectedModel === 'gpt-4') {
+                tooltip.innerHTML = '<strong>🔍 ChatGPT-4:</strong> Slower but more intelligent. Perfect for long conversations (2+ hours), complex emotions, and deep psychological insights.';
+                tooltip.style.background = '#f8e6ff';
+                tooltip.style.borderColor = '#d4c5f9';
+                tooltip.style.color = '#5a2d82';
+                
+                // Update visual selection
+                gpt4Option.classList.add('selected');
+                gpt35Option.classList.remove('selected');
+            } else {
+                tooltip.innerHTML = '<strong>⚡ ChatGPT-3.5:</strong> Quick response, lower cost. Handles conversations up to 1 hour well. Great for fast insights.';
+                tooltip.style.background = '#e8f4fd';
+                tooltip.style.borderColor = '#bee5eb';
+                tooltip.style.color = '#0c5460';
+                
+                // Update visual selection
+                gpt35Option.classList.add('selected');
+                gpt4Option.classList.remove('selected');
+            }
+        }
+
         function displayTranscript(transcript) {
             const transcriptBox = document.getElementById('transcriptBox');
             const lines = transcript.split('\n').filter(line => line.trim());
@@ -1289,8 +1406,9 @@ ${namedTranscript}`;
                     },
                     body: JSON.stringify({
                         prompt: summaryPrompt,
-                        maxTokens: 1000,
-                        language: analysisLanguage
+                        maxTokens: selectedModel === 'gpt-4' ? 3000 : 2000, // Higher limits for summaries
+                        language: analysisLanguage,
+                        model: selectedModel
                     })
                 });
                 
@@ -1419,8 +1537,9 @@ ${namedTranscript}`;
                     },
                     body: JSON.stringify({
                         prompt: analysisPrompt,
-                        maxTokens: 1500,
-                        language: analysisLanguage
+                        maxTokens: selectedModel === 'gpt-4' ? 4000 : 2500, // Higher limits for analysis
+                        language: analysisLanguage,
+                        model: selectedModel
                     })
                 });
                 
@@ -1478,13 +1597,17 @@ ${namedTranscript}`;
             const continuePrompt = document.getElementById('continuePrompt').value;
             const relationshipType = document.getElementById('relationshipType').value;
             const customRelationship = document.getElementById('customRelationship').value;
+            const selectedModel = document.getElementById('aiModel').value;
             
             // Get speaker information
             const { namedSpeakers, selectedSpeaker } = getSpeakerNames();
             const namedTranscript = createNamedTranscript();
             
             try {
-                showLoading('Continuing analysis...');
+                const loadingMessage = selectedModel === 'gpt-4' ? 
+                    'Continuing analysis with ChatGPT-4... (this may take 10-30 seconds)' : 
+                    'Continuing analysis with ChatGPT-3.5... (should be ready in 2-5 seconds)';
+                showLoading(loadingMessage);
                 
                 let relationshipContext = '';
                 if (relationshipType === 'other' && customRelationship.trim()) {
@@ -1541,8 +1664,9 @@ ${namedTranscript}`;
                     },
                     body: JSON.stringify({
                         prompt: fullPrompt,
-                        maxTokens: 1000,
-                        language: analysisLanguage
+                        maxTokens: selectedModel === 'gpt-4' ? 2500 : 1500, // Higher limits for follow-ups
+                        language: analysisLanguage,
+                        model: selectedModel
                     })
                 });
                 
@@ -1739,6 +1863,7 @@ ${namedTranscript}`;
                 analysisLanguage: document.getElementById('analysisLanguage').value,
                 relationshipType: document.getElementById('relationshipType').value,
                 customRelationship: document.getElementById('customRelationship').value,
+                aiModel: document.getElementById('aiModel').value,
                 createdAt: now.toISOString(),
                 updatedAt: now.toISOString(),
                 summary: document.getElementById('summaryContent').innerHTML || null,
@@ -1782,6 +1907,8 @@ ${namedTranscript}`;
             document.getElementById('analysisLanguage').value = conversation.analysisLanguage || 'en';
             document.getElementById('relationshipType').value = conversation.relationshipType || 'friends';
             document.getElementById('customRelationship').value = conversation.customRelationship || '';
+            document.getElementById('aiModel').value = conversation.aiModel || 'gpt-3.5-turbo';
+            updateModelTooltip();
             
             // Display transcript
             displayTranscript(currentTranscript);

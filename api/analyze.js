@@ -16,10 +16,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { prompt, maxTokens = 1000, language } = req.body;
+    const { prompt, maxTokens = 1000, language, model = 'gpt-3.5-turbo' } = req.body;
     console.log('🤖 Analysis request received');
     console.log('📝 Prompt length:', prompt ? prompt.length : 'undefined');
     console.log('🔢 Max tokens:', maxTokens);
+    console.log('🧠 Model:', model);
 
     // Validate OpenAI API key
     if (!process.env.OPENAI_API_KEY) {
@@ -38,18 +39,18 @@ export default async function handler(req, res) {
       });
     }
 
-    if (prompt.length > 15000) {
+    if (prompt.length > 100000) {
       console.error('❌ Prompt too long:', prompt.length);
       return res.status(400).json({
         error: 'Prompt too long',
-        message: 'Please provide a shorter prompt (max 15,000 characters)'
+        message: 'Please provide a shorter prompt (max 100,000 characters for long conversations)'
       });
     }
 
     console.log('🚀 Sending request to OpenAI...');
     
     const openaiPayload = {
-      model: 'gpt-3.5-turbo', // Changed from gpt-4 to gpt-3.5-turbo for faster response
+      model: model, // Use the model from request (gpt-3.5-turbo or gpt-4)
       messages: [
         {
           role: 'system',
@@ -60,7 +61,7 @@ export default async function handler(req, res) {
           content: prompt
         }
       ],
-      max_tokens: Math.min(maxTokens, 2000), // Reduced from 3000 to 2000
+      max_tokens: Math.min(maxTokens, model === 'gpt-4' ? 8000 : 4000), // Much higher limits for long conversations
       temperature: 0.7
     };
 
@@ -137,7 +138,7 @@ export default async function handler(req, res) {
       res.status(200).json({
         response: content,
         usage: data.usage,
-        model: 'gpt-3.5-turbo'
+        model: model
       });
     } else {
       console.error('❌ Invalid OpenAI response structure:', JSON.stringify(data, null, 2));
