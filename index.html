@@ -611,6 +611,23 @@
                             <option value="he">Hebrew</option>
                         </select>
                     </div>
+                    <div class="setting-group">
+                        <label for="relationshipType">Relationship Type:</label>
+                        <select id="relationshipType">
+                            <option value="romantic">💕 Romantic Partners</option>
+                            <option value="parent-child">👨‍👩‍👧‍👦 Parent - Child</option>
+                            <option value="friends">👥 Friends</option>
+                            <option value="colleagues">💼 Colleagues</option>
+                            <option value="family">🏠 Family Members</option>
+                            <option value="other">🔧 Other (specify below)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="setting-group">
+                        <label for="customRelationship">Custom Relationship (if "Other" selected):</label>
+                        <input type="text" id="customRelationship" placeholder="e.g., therapist-client, teacher-student...">
+                    </div>
                 </div>
             </div>
 
@@ -1211,13 +1228,57 @@ Continue the flowing, conversational style and be responsive to their specific n
                 const analysisLanguage = document.getElementById('analysisLanguage').value;
                 const userName = document.getElementById('userName').value || 'User';
                 const customSummaryPrompt = document.getElementById('summaryPrompt').value;
+                const relationshipType = document.getElementById('relationshipType').value;
+                const customRelationship = document.getElementById('customRelationship').value;
                 
-                const languageInstruction = analysisLanguage === 'he' ? 
-                    'Please respond in Hebrew only. ' : 
-                    'Please respond in English only. ';
+                let summaryPrompt;
+                let relationshipContext = '';
                 
-                let summaryPrompt = languageInstruction + customSummaryPrompt;
-                summaryPrompt += `\n\nUser name: ${userName}\n\nConversation transcript:\n${currentTranscript}`;
+                // Determine relationship context
+                if (relationshipType === 'other' && customRelationship.trim()) {
+                    relationshipContext = customRelationship.trim();
+                } else {
+                    const relationshipMap = {
+                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
+                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
+                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
+                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
+                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
+                    };
+                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
+                }
+                
+                if (analysisLanguage === 'he') {
+                    // Native Hebrew prompt for summary
+                    summaryPrompt = `אתה מומחה לניתוח שיחות ומאמן אישי. אני רוצה שתכין לי סיכום ברור ושימושי של השיחה שלי. דבר אליי ישירות בגוף שני בעברית טבעית ושוטפת.
+
+השיחה הזאת היא בין ${relationshipContext}. קח את זה בחשבון בסיכום.
+
+אני רוצה שתארגן את הסיכום לפי:
+- הנושאים העיקריים שדיברנו עליהם
+- נקודות חשובות והחלטות שהתקבלו
+- תובנות או דברים חדשים שעלו בשיחה
+- משימות או צעדים הבאים שהוזכרו
+
+כתוב בטון אישי וחם, פנה אליי כ"אתה" והתייחס לתרומה שלי לשיחה. תן לי סיכום מפורט אבל לא ארוך מדי.
+
+שמי: ${userName}
+
+תמליל השיחה:
+${currentTranscript}`;
+                } else {
+                    // Enhanced English prompt for summary
+                    summaryPrompt = `You are an expert conversation analyst and personal coach. I want you to create a clear and useful summary of my conversation. Speak to me directly in second person with natural, flowing English.
+
+This conversation is between ${relationshipContext}. Keep this relationship context in mind for your summary.
+
+${customSummaryPrompt}
+
+User name: ${userName}
+
+Conversation transcript:
+${currentTranscript}`;
+                }
                 
                 const response = await fetch(`${BACKEND_URL}/api/analyze`, {
                     method: 'POST',
@@ -1281,20 +1342,72 @@ Continue the flowing, conversational style and be responsive to their specific n
             const selectedSpeaker = getSelectedSpeaker();
             const customPrompt = document.getElementById('aiPrompt').value;
             const analysisLanguage = document.getElementById('analysisLanguage').value;
+            const relationshipType = document.getElementById('relationshipType').value;
+            const customRelationship = document.getElementById('customRelationship').value;
             
             try {
                 showLoading('Analyzing your conversation...');
                 
-                const languageInstruction = analysisLanguage === 'he' ? 
-                    'Please respond in Hebrew only. ' : 
-                    'Please respond in English only. ';
+                let analysisPrompt;
+                let relationshipContext = '';
                 
-                let analysisPrompt = languageInstruction + customPrompt;
-                analysisPrompt += `\n\nUser name: ${userName}\n`;
-                if (selectedSpeaker) {
-                    analysisPrompt += `Focus specifically on the behavior and communication patterns of "${selectedSpeaker}" in this conversation. `;
+                // Determine relationship context
+                if (relationshipType === 'other' && customRelationship.trim()) {
+                    relationshipContext = customRelationship.trim();
+                } else {
+                    const relationshipMap = {
+                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
+                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
+                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
+                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
+                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
+                    };
+                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
                 }
-                analysisPrompt += `\n\nConversation transcript:\n${currentTranscript}`;
+                
+                if (analysisLanguage === 'he') {
+                    // Native Hebrew prompt - natural and coach-like
+                    analysisPrompt = `אתה מאמן אישי ופסיכולוג מנוסה שמתמחה בניתוח תקשורת ויחסים. אתה דובר עברית שפת אם ומתבטא בצורה טבעית וחמה. תפקידך לעזור לאנשים להבין את עצמם טוב יותר דרך הדרך שבה הם מתקשרים.
+
+השיחה שלפניך היא בין ${relationshipContext}. אני רוצה שתנתח את התנהגות התקשורתית שלי ותעזור לי להבין איך אני פועל ביחסים.
+
+דברים שאני רוצה שתתמקד בהם:
+- איך אני מתבטא ומתקשר
+- מה הסגנון התקשורתי שלי
+- איך אני מגיב למצבים שונים בשיחה
+- איך התקשורת שלי משפיעה על הקשר הזה
+- מה אני יכול לשפר או לשנות
+- עצות מעשיות לשיפור התקשורת שלי
+
+דבר אליי ישירות בגוף שני, בטון תומך ומעודד כמו מאמן אישי. כתוב בעברית טבעית ושוטפת, לא בתרגום. תן לי תובנות מעמיקות אבל באופן שאני אוכל לקלוט ולהפעיל בחיים.
+
+שמי: ${userName}
+${selectedSpeaker ? `התמקד בניתוח של "${selectedSpeaker}" בשיחה הזאת.` : ''}
+
+תמליל השיחה:
+${currentTranscript}`;
+                } else {
+                    // Enhanced English prompt - more coach-like
+                    analysisPrompt = `You are an experienced personal coach and communication psychologist who specializes in helping people understand themselves through their communication patterns. You have a warm, supportive coaching style that makes people feel understood and empowered.
+
+The conversation you're analyzing is between ${relationshipContext}. I want you to analyze my communication behavior and help me understand how I operate in relationships.
+
+Focus on:
+- How I express myself and communicate
+- My communication style and patterns
+- How I respond to different situations in the conversation
+- How my communication affects this relationship dynamic
+- What I could improve or change
+- Practical advice for better communication
+
+Speak to me directly in second person with a supportive, encouraging tone like a personal coach would. Write in natural, flowing language that feels like a real conversation. Give me deep insights but in a way I can understand and apply in my life.
+
+User name: ${userName}
+${selectedSpeaker ? `Focus specifically on analyzing "${selectedSpeaker}" in this conversation.` : ''}
+
+Conversation transcript:
+${currentTranscript}`;
+                }
                 
                 const response = await fetch(`${BACKEND_URL}/api/analyze`, {
                     method: 'POST',
@@ -1361,23 +1474,59 @@ Continue the flowing, conversational style and be responsive to their specific n
             const previousAnalysis = document.getElementById('analysisContent').innerHTML.replace(/<br>/g, '\n');
             const analysisLanguage = document.getElementById('analysisLanguage').value;
             const continuePrompt = document.getElementById('continuePrompt').value;
+            const relationshipType = document.getElementById('relationshipType').value;
+            const customRelationship = document.getElementById('customRelationship').value;
             
             try {
                 showLoading('Continuing analysis...');
                 
-                const languageInstruction = analysisLanguage === 'he' ? 
-                    'Please respond in Hebrew only. ' : 
-                    'Please respond in English only. ';
-                
-                let fullPrompt = languageInstruction + continuePrompt;
-                fullPrompt += `\n\nPrevious analysis:\n${previousAnalysis}\n\n`;
-                fullPrompt += `The user (${userName}) has added this context/question: "${contextInput}"\n\n`;
-                fullPrompt += `Please respond to their input and provide additional insights. `;
-                if (selectedSpeaker) {
-                    fullPrompt += `Continue focusing on "${selectedSpeaker}" in the conversation. `;
+                let relationshipContext = '';
+                if (relationshipType === 'other' && customRelationship.trim()) {
+                    relationshipContext = customRelationship.trim();
+                } else {
+                    const relationshipMap = {
+                        'romantic': analysisLanguage === 'he' ? 'זוג רומנטי' : 'romantic partners',
+                        'parent-child': analysisLanguage === 'he' ? 'הורה וילד' : 'parent and child',
+                        'friends': analysisLanguage === 'he' ? 'חברים' : 'friends',
+                        'colleagues': analysisLanguage === 'he' ? 'עמיתים לעבודה' : 'work colleagues',
+                        'family': analysisLanguage === 'he' ? 'בני משפחה' : 'family members'
+                    };
+                    relationshipContext = relationshipMap[relationshipType] || (analysisLanguage === 'he' ? 'אנשים' : 'people');
                 }
-                fullPrompt += `Keep the conversational, empathetic tone and address them in second person.\n\n`;
-                fullPrompt += `Original transcript:\n${currentTranscript}`;
+                
+                let fullPrompt;
+                
+                if (analysisLanguage === 'he') {
+                    fullPrompt = `אתה מאמן אישי ופסיכולוג מנוסה שממשיך ניתוח תקשורת. דבר בעברית טבעית וחמה.
+
+הניתוח הקודם שלך:
+${previousAnalysis}
+
+המשתמש (${userName}) הוסיף את ההקשר/השאלה הזאת: "${contextInput}"
+
+השיחה המקורית הייתה בין ${relationshipContext}. קח את זה בחשבון.
+
+אנא התייחס לשאלה או ההקשר שלהם ותן תובנות נוספות. ${selectedSpeaker ? `המשך להתמקד ב"${selectedSpeaker}" בשיחה.` : ''} שמור על הטון האישי והתומך ופנה אליהם בגוף שני.
+
+התמליל המקורי:
+${currentTranscript}`;
+                } else {
+                    fullPrompt = `You are an experienced personal coach and psychologist continuing a communication analysis. Speak naturally and warmly.
+
+Previous analysis:
+${previousAnalysis}
+
+The user (${userName}) has added this context/question: "${contextInput}"
+
+The original conversation was between ${relationshipContext}. Keep this in mind.
+
+${continuePrompt}
+
+${selectedSpeaker ? `Continue focusing on "${selectedSpeaker}" in the conversation.` : ''}
+
+Original transcript:
+${currentTranscript}`;
+                }
                 
                 const response = await fetch(`${BACKEND_URL}/api/analyze`, {
                     method: 'POST',
@@ -1542,6 +1691,8 @@ Continue the flowing, conversational style and be responsive to their specific n
                 userName: document.getElementById('userName').value || 'User',
                 conversationLanguage: document.getElementById('conversationLanguage').value,
                 analysisLanguage: document.getElementById('analysisLanguage').value,
+                relationshipType: document.getElementById('relationshipType').value,
+                customRelationship: document.getElementById('customRelationship').value,
                 createdAt: now.toISOString(),
                 updatedAt: now.toISOString(),
                 summary: document.getElementById('summaryContent').innerHTML || null,
@@ -1583,6 +1734,8 @@ Continue the flowing, conversational style and be responsive to their specific n
             document.getElementById('userName').value = conversation.userName || '';
             document.getElementById('conversationLanguage').value = conversation.conversationLanguage || 'en';
             document.getElementById('analysisLanguage').value = conversation.analysisLanguage || 'en';
+            document.getElementById('relationshipType').value = conversation.relationshipType || 'friends';
+            document.getElementById('customRelationship').value = conversation.customRelationship || '';
             
             // Display transcript
             displayTranscript(currentTranscript);
