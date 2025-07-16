@@ -923,17 +923,72 @@ Continue the flowing, conversational style and be responsive to their specific n
         }
 
         function initializeEventListeners() {
+            console.log('🔧 Initializing event listeners...');
+            
             document.getElementById('startRecording').addEventListener('click', startRecording);
             document.getElementById('stopRecording').addEventListener('click', stopRecording);
             document.getElementById('audioFile').addEventListener('change', handleFileUpload);
             document.getElementById('conversationText').addEventListener('input', handleTextInput);
-            document.getElementById('summaryBtn').addEventListener('click', generateSummary);
-            document.getElementById('analyzeBtn').addEventListener('click', analyzeConversation);
-            document.getElementById('continueBtn').addEventListener('click', continueAnalysis);
-            document.getElementById('saveConversationBtn').addEventListener('click', saveConversation);
-            document.getElementById('newConversationBtn').addEventListener('click', startNewConversation);
-            document.getElementById('testConnectionBtn').addEventListener('click', testOpenAIConnection);
-            document.getElementById('aiModel').addEventListener('change', updateModelTooltip);
+            
+            // Check if buttons exist before adding listeners
+            const summaryBtn = document.getElementById('summaryBtn');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const continueBtn = document.getElementById('continueBtn');
+            const saveBtn = document.getElementById('saveConversationBtn');
+            const newBtn = document.getElementById('newConversationBtn');
+            const testBtn = document.getElementById('testConnectionBtn');
+            const modelSelect = document.getElementById('aiModel');
+            
+            if (summaryBtn) {
+                summaryBtn.addEventListener('click', generateSummary);
+                console.log('✅ Summary button listener added');
+            } else {
+                console.error('❌ Summary button not found');
+            }
+            
+            if (analyzeBtn) {
+                analyzeBtn.addEventListener('click', analyzeConversation);
+                console.log('✅ Analyze button listener added');
+            } else {
+                console.error('❌ Analyze button not found');
+            }
+            
+            if (continueBtn) {
+                continueBtn.addEventListener('click', continueAnalysis);
+                console.log('✅ Continue button listener added');
+            } else {
+                console.error('❌ Continue button not found');
+            }
+            
+            if (saveBtn) {
+                saveBtn.addEventListener('click', saveConversation);
+                console.log('✅ Save button listener added');
+            } else {
+                console.error('❌ Save button not found');
+            }
+            
+            if (newBtn) {
+                newBtn.addEventListener('click', startNewConversation);
+                console.log('✅ New conversation button listener added');
+            } else {
+                console.error('❌ New conversation button not found');
+            }
+            
+            if (testBtn) {
+                testBtn.addEventListener('click', testOpenAIConnection);
+                console.log('✅ Test connection button listener added');
+            } else {
+                console.error('❌ Test connection button not found');
+            }
+            
+            if (modelSelect) {
+                modelSelect.addEventListener('change', updateModelTooltip);
+                console.log('✅ Model select listener added');
+            } else {
+                console.error('❌ Model select not found');
+            }
+            
+            console.log('🔧 Event listeners initialization complete');
         }
 
         function setupMethodSwitching() {
@@ -1334,10 +1389,14 @@ Continue the flowing, conversational style and be responsive to their specific n
         }
 
         async function generateSummary() {
+            console.log('📋 Generate Summary button clicked');
+            
             if (!currentTranscript) {
                 showError('No transcript available to summarize.');
                 return;
             }
+            
+            console.log('📝 Transcript available, proceeding with summary...');
             
             try {
                 showLoading('Generating summary...');
@@ -1453,10 +1512,14 @@ ${namedTranscript}`;
         }
 
         async function analyzeConversation() {
+            console.log('🔍 Analyze Conversation button clicked');
+            
             if (!currentTranscript) {
                 showError('No transcript available to analyze.');
                 return;
             }
+            
+            console.log('📝 Transcript available, proceeding with analysis...');
             
             const userName = document.getElementById('userName').value || 'User';
             const customPrompt = document.getElementById('aiPrompt').value;
@@ -2063,8 +2126,9 @@ ${namedTranscript}`;
             }
         }
 
-        // Test OpenAI Connection
         async function testOpenAIConnection() {
+            console.log('🧪 Test OpenAI Connection button clicked');
+            
             try {
                 showLoading('Testing OpenAI connection...');
                 
