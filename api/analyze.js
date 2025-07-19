@@ -39,11 +39,11 @@ export default async function handler(req, res) {
       });
     }
 
-    if (prompt.length > 100000) {
+    if (prompt.length > 15000) {
       console.error('❌ Prompt too long:', prompt.length);
       return res.status(400).json({
         error: 'Prompt too long',
-        message: 'Please provide a shorter prompt (max 100,000 characters for long conversations)'
+        message: 'Please provide a shorter prompt (max 15,000 characters)'
       });
     }
 
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
           content: prompt
         }
       ],
-      max_tokens: Math.min(maxTokens, model === 'gpt-4' ? 8000 : 4000), // Much higher limits for long conversations
+      max_tokens: Math.min(maxTokens, model === 'gpt-4' ? 3000 : 2000), // Higher limit for GPT-4
       temperature: 0.7
     };
 
